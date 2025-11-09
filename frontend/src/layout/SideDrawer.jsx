@@ -1,32 +1,75 @@
 import React, { useState } from "react";
-import { RiAuctionFill } from "react-icons/ri";
-import { MdLeaderboard, MdDashboard } from "react-icons/md";
-import { SiGooglesearchconsole } from "react-icons/si";
-import { BsFillInfoSquareFill } from "react-icons/bs";
+import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { GiHamburgerMenu } from "react-icons/gi";
+import { IoMdCloseCircleOutline } from "react-icons/io";
 import { FaFacebook } from "react-icons/fa";
 import { RiInstagramFill } from "react-icons/ri";
-import { GiHamburgerMenu } from "react-icons/gi";
-import { IoMdCloseCircleOutline, IoIosCreate } from "react-icons/io";
-import { FaUserCircle } from "react-icons/fa";
-import { FaFileInvoiceDollar } from "react-icons/fa6";
-import { FaEye } from "react-icons/fa";
-import { useDispatch, useSelector } from "react-redux";
 import { logout } from "@/store/slices/userSlice";
-import { Link } from "react-router-dom";
+import sidebarRoutes from "@/config/sidebarRoutes";
 
-const SideDrawer = () => {
+const SideDrawer = ({ isCollapsed = false, onToggleCollapse }) => {
   const [show, setShow] = useState(false);
 
   const { isAuthenticated, user } = useSelector((state) => state.user);
-
   const dispatch = useDispatch();
+
   const handleLogout = () => {
     dispatch(logout());
   };
 
+  // Get routes based on user role
+  const getMainRoutes = () => {
+    const routes = [...sidebarRoutes.common];
+    
+    if (isAuthenticated && user) {
+      if (user.role === "Super Admin") {
+        routes.push(...sidebarRoutes.superAdmin);
+      } else if (user.role === "Auctioneer") {
+        routes.push(...sidebarRoutes.auctioneer);
+      } else if (user.role === "Bidder") {
+        routes.push(...sidebarRoutes.bidder);
+      }
+    }
+    
+    return routes;
+  };
+
+  const getSecondaryRoutes = () => {
+    const routes = [];
+    
+    if (isAuthenticated) {
+      routes.push(...sidebarRoutes.profile);
+    }
+    
+    routes.push(...sidebarRoutes.secondary);
+    
+    return routes;
+  };
+
+  const NavLink = ({ route, collapsed }) => {
+    const Icon = route.icon;
+    
+    return (
+      <li className={`transform transition-all duration-300 ${collapsed ? 'lg:hover:translate-x-0' : 'hover:translate-x-2'}`}>
+        <Link
+          to={route.href}
+          className={`flex font-semibold gap-3 items-center rounded-xl hover:bg-gradient-to-r hover:from-[#D6482b]/10 hover:to-[#ff6b4a]/10 hover:text-[#D6482b] transition-all duration-300 group ${
+            collapsed ? 'lg:justify-center lg:px-3 lg:py-3 text-lg' : 'text-lg px-4 py-3'
+          }`}
+          title={collapsed ? route.label : ''}
+          onClick={() => setShow(false)} 
+        >
+          <Icon className="text-2xl group-hover:scale-110 transition-transform duration-300 flex-shrink-0" />
+          <span className={collapsed ? 'lg:hidden' : ''}>{route.label}</span>
+        </Link>
+      </li>
+    );
+  };
+
   return (
     <>
-      {/* Backdrop Overlay */}
+      {/* Mobile Overlay */}
       {show && (
         <div
           onClick={() => setShow(false)}
@@ -34,7 +77,7 @@ const SideDrawer = () => {
         />
       )}
 
-      {/* Hamburger Button */}
+      {/* Hamburger Button - Mobile Only */}
       <button
         onClick={() => setShow(!show)}
         className="fixed right-5 top-5 bg-gradient-to-br from-[#D6482B] to-[#b8381e] text-white text-3xl p-3 rounded-xl hover:scale-110 hover:shadow-2xl hover:shadow-[#D6482B]/50 lg:hidden z-50 transition-all duration-300 active:scale-95"
@@ -44,118 +87,78 @@ const SideDrawer = () => {
 
       {/* Sidebar */}
       <div
-        className={`w-[100%] sm:w-[320px] bg-gradient-to-b from-[#fdfbf7] to-[#f6f4f0] h-full fixed top-0 ${
-          show ? "left-0" : "left-[-100%]"
-        } transition-all duration-500 ease-in-out p-6 flex flex-col justify-between lg:left-0 border-r-[1px] border-r-stone-200 shadow-2xl z-50`}
+        className={`bg-gradient-to-b from-[#fdfbf7] to-[#f6f4f0] h-full fixed top-0 transition-all duration-500 ease-in-out p-6 flex flex-col justify-between border-r-[1px] border-r-stone-200 shadow-2xl z-50 ${
+          show ? "left-0 w-[100%] sm:w-[320px]" : "left-[-100%] w-[100%] sm:w-[320px]"
+        } ${
+          isCollapsed 
+            ? 'lg:left-0 lg:w-[80px] lg:p-3' 
+            : 'lg:left-0 lg:w-[320px] lg:p-6'
+        }`}
       >
-        <div className="relative">
+        <div className="relative overflow-y-auto">
           {/* Logo */}
-          <Link to={"/"} className="block mb-8 group">
-            <h4 className="text-3xl font-bold mb-2 transition-all duration-300 group-hover:scale-105">
-              Bid<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D6482b] to-[#ff6b4a]">Bazaar</span>
+          <Link to={"/"} className={`block mb-8 group ${isCollapsed ? 'lg:mb-4' : ''}`}>
+            <h4 className={`text-3xl font-bold mb-2 transition-all duration-300 group-hover:scale-105 ${isCollapsed ? 'lg:text-xl lg:mb-0' : ''}`}>
+              {isCollapsed ? (
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D6482b] to-[#ff6b4a] hidden lg:block">B</span>
+              ) : (
+                <>
+                  Bid<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D6482b] to-[#ff6b4a]">Bazaar</span>
+                </>
+              )}
             </h4>
-            <div className="h-1 w-16 bg-gradient-to-r from-[#D6482b] to-[#ff6b4a] rounded-full transition-all duration-300 group-hover:w-24"></div>
+            <div className={`h-1 bg-gradient-to-r from-[#D6482b] to-[#ff6b4a] rounded-full transition-all duration-300 ${
+              isCollapsed ? 'lg:hidden' : 'w-16 group-hover:w-24'
+            }`}></div>
           </Link>
 
           {/* Main Navigation */}
           <nav className="mb-6">
             <ul className="flex flex-col gap-2">
-              <li className="transform transition-all duration-300 hover:translate-x-2">
-                <Link
-                  to={"/auctions"}
-                  className="flex text-lg font-semibold gap-3 items-center px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-[#D6482b]/10 hover:to-[#ff6b4a]/10 hover:text-[#D6482b] transition-all duration-300 group"
-                >
-                  <RiAuctionFill className="text-2xl group-hover:scale-110 transition-transform duration-300" />
-                  <span>Auctions</span>
-                </Link>
-              </li>
-              <li className="transform transition-all duration-300 hover:translate-x-2">
-                <Link
-                  to={"/leaderboard"}
-                  className="flex text-lg font-semibold gap-3 items-center px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-[#D6482b]/10 hover:to-[#ff6b4a]/10 hover:text-[#D6482b] transition-all duration-300 group"
-                >
-                  <MdLeaderboard className="text-2xl group-hover:scale-110 transition-transform duration-300" />
-                  <span>Leaderboard</span>
-                </Link>
-              </li>
-
-              {/* Auctioneer Links */}
-              {isAuthenticated && user && user.role === "Auctioneer" && (
-                <>
-                  <li className="transform transition-all duration-300 hover:translate-x-2">
-                    <Link
-                      to={"/submit-commission"}
-                      className="flex text-lg font-semibold gap-3 items-center px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-[#D6482b]/10 hover:to-[#ff6b4a]/10 hover:text-[#D6482b] transition-all duration-300 group"
-                    >
-                      <FaFileInvoiceDollar className="text-2xl group-hover:scale-110 transition-transform duration-300" />
-                      <span>Submit Commission</span>
-                    </Link>
-                  </li>
-                  <li className="transform transition-all duration-300 hover:translate-x-2">
-                    <Link
-                      to={"/create-auction"}
-                      className="flex text-lg font-semibold gap-3 items-center px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-[#D6482b]/10 hover:to-[#ff6b4a]/10 hover:text-[#D6482b] transition-all duration-300 group"
-                    >
-                      <IoIosCreate className="text-2xl group-hover:scale-110 transition-transform duration-300" />
-                      <span>Create Auction</span>
-                    </Link>
-                  </li>
-                  <li className="transform transition-all duration-300 hover:translate-x-2">
-                    <Link
-                      to={"/view-my-auctions"}
-                      className="flex text-lg font-semibold gap-3 items-center px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-[#D6482b]/10 hover:to-[#ff6b4a]/10 hover:text-[#D6482b] transition-all duration-300 group"
-                    >
-                      <FaEye className="text-2xl group-hover:scale-110 transition-transform duration-300" />
-                      <span>View My Auctions</span>
-                    </Link>
-                  </li>
-                </>
-              )}
-
-              {/* Super Admin Link */}
-              {isAuthenticated && user && user.role === "Super Admin" && (
-                <li className="transform transition-all duration-300 hover:translate-x-2">
-                  <Link
-                    to={"/dashboard"}
-                    className="flex text-lg font-semibold gap-3 items-center px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-[#D6482b]/10 hover:to-[#ff6b4a]/10 hover:text-[#D6482b] transition-all duration-300 group"
-                  >
-                    <MdDashboard className="text-2xl group-hover:scale-110 transition-transform duration-300" />
-                    <span>Dashboard</span>
-                  </Link>
-                </li>
-              )}
+              {getMainRoutes().map((route, index) => (
+                <NavLink key={index} route={route} collapsed={isCollapsed} />
+              ))}
             </ul>
           </nav>
 
           {/* Auth Buttons */}
           {!isAuthenticated ? (
-            <div className="my-6 flex gap-3">
+            <div className={`my-6 flex gap-3 ${isCollapsed ? 'lg:flex-col lg:gap-2' : ''}`}>
               <Link
                 to={"/sign-up"}
-                className="flex-1 bg-gradient-to-r from-[#D6482B] to-[#b8381e] font-semibold hover:shadow-lg hover:shadow-[#D6482B]/50 text-lg py-3 px-4 rounded-xl text-white text-center transition-all duration-300 hover:scale-105 active:scale-95"
+                className={`flex-1 bg-gradient-to-r from-[#D6482B] to-[#b8381e] font-semibold hover:shadow-lg hover:shadow-[#D6482B]/50 py-3 px-4 rounded-xl text-white text-center transition-all duration-300 hover:scale-105 active:scale-95 ${
+                  isCollapsed ? 'lg:text-sm lg:py-2 lg:px-2' : 'text-lg'
+                }`}
               >
-                Sign Up
+                {isCollapsed ? <span className="lg:hidden">Sign Up</span> : 'Sign Up'}
+                {isCollapsed && <span className="hidden lg:inline">Sign Up</span>}
               </Link>
               <Link
                 to={"/login"}
-                className="flex-1 text-[#D6482B] bg-white border-2 border-[#D6482B] hover:bg-[#D6482B] hover:text-white font-semibold text-lg py-3 px-4 rounded-xl text-center transition-all duration-300 hover:scale-105 active:scale-95"
+                className={`flex-1 text-[#D6482B] bg-white border-2 border-[#D6482B] hover:bg-[#D6482B] hover:text-white font-semibold py-3 px-4 rounded-xl text-center transition-all duration-300 hover:scale-105 active:scale-95 ${
+                  isCollapsed ? 'lg:text-sm lg:py-2 lg:px-2' : 'text-lg'
+                }`}
               >
-                Login
+                {isCollapsed ? <span className="lg:hidden">Login</span> : 'Login'}
+                {isCollapsed && <span className="hidden lg:inline">Login</span>}
               </Link>
             </div>
           ) : (
             <div className="my-6">
               <button
                 onClick={handleLogout}
-                className="w-full bg-gradient-to-r from-[#D6482B] to-[#b8381e] font-semibold hover:shadow-lg hover:shadow-[#D6482B]/50 text-lg py-3 px-4 rounded-xl text-white transition-all duration-300 hover:scale-105 active:scale-95"
+                className={`w-full bg-gradient-to-r from-[#D6482B] to-[#b8381e] font-semibold hover:shadow-lg hover:shadow-[#D6482B]/50 py-3 px-4 rounded-xl text-white transition-all duration-300 hover:scale-105 active:scale-95 ${
+                  isCollapsed ? 'lg:text-sm lg:py-2 lg:px-2' : 'text-lg'
+                }`}
               >
-                Logout
+                {isCollapsed ? <span className="lg:hidden">Logout</span> : 'Logout'}
+                {isCollapsed && <span className="hidden lg:inline">Logout</span>}
               </button>
             </div>
           )}
 
           {/* Divider */}
-          <div className="relative my-6">
+          <div className={`relative my-6 ${isCollapsed ? 'lg:hidden' : ''}`}>
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-stone-300"></div>
             </div>
@@ -164,39 +167,13 @@ const SideDrawer = () => {
           {/* Secondary Navigation */}
           <nav>
             <ul className="flex flex-col gap-2">
-              {isAuthenticated && (
-                <li className="transform transition-all duration-300 hover:translate-x-2">
-                  <Link
-                    to={"/me"}
-                    className="flex text-lg font-semibold gap-3 items-center px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-[#D6482b]/10 hover:to-[#ff6b4a]/10 hover:text-[#D6482b] transition-all duration-300 group"
-                  >
-                    <FaUserCircle className="text-2xl group-hover:scale-110 transition-transform duration-300" />
-                    <span>Profile</span>
-                  </Link>
-                </li>
-              )}
-              <li className="transform transition-all duration-300 hover:translate-x-2">
-                <Link
-                  to={"/how-it-works-info"}
-                  className="flex text-lg font-semibold gap-3 items-center px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-[#D6482b]/10 hover:to-[#ff6b4a]/10 hover:text-[#D6482b] transition-all duration-300 group"
-                >
-                  <SiGooglesearchconsole className="text-2xl group-hover:scale-110 transition-transform duration-300" />
-                  <span>How it works</span>
-                </Link>
-              </li>
-              <li className="transform transition-all duration-300 hover:translate-x-2">
-                <Link
-                  to={"/about"}
-                  className="flex text-lg font-semibold gap-3 items-center px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-[#D6482b]/10 hover:to-[#ff6b4a]/10 hover:text-[#D6482b] transition-all duration-300 group"
-                >
-                  <BsFillInfoSquareFill className="text-2xl group-hover:scale-110 transition-transform duration-300" />
-                  <span>About Us</span>
-                </Link>
-              </li>
+              {getSecondaryRoutes().map((route, index) => (
+                <NavLink key={index} route={route} collapsed={isCollapsed} />
+              ))}
             </ul>
           </nav>
 
-          {/* Close Button */}
+          {/* Close Button - Mobile Only */}
           <button
             onClick={() => setShow(!show)}
             className="absolute top-0 right-4 text-[32px] sm:hidden text-stone-400 hover:text-[#D6482B] transition-all duration-300 hover:rotate-90 hover:scale-110"
@@ -206,25 +183,31 @@ const SideDrawer = () => {
         </div>
 
         {/* Footer */}
-        <div className="space-y-4">
+        <div className={`space-y-4 ${isCollapsed ? 'lg:space-y-2' : ''}`}>
           {/* Social Links */}
-          <div className="flex gap-3 items-center">
+          <div className={`flex gap-3 items-center ${isCollapsed ? 'lg:flex-col lg:gap-2 lg:items-center' : ''}`}>
             <Link
               to="/"
-              className="bg-white text-stone-500 p-3 text-xl rounded-xl hover:text-blue-600 hover:shadow-lg hover:shadow-blue-600/30 hover:scale-110 transition-all duration-300 border border-stone-200"
+              className={`bg-white text-stone-500 text-xl rounded-xl hover:text-blue-600 hover:shadow-lg hover:shadow-blue-600/30 hover:scale-110 transition-all duration-300 border border-stone-200 ${
+                isCollapsed ? 'lg:p-2' : 'p-3'
+              }`}
+              title="Facebook"
             >
               <FaFacebook />
             </Link>
             <Link
               to="/"
-              className="bg-white text-stone-500 p-3 text-xl rounded-xl hover:text-pink-600 hover:shadow-lg hover:shadow-pink-600/30 hover:scale-110 transition-all duration-300 border border-stone-200"
+              className={`bg-white text-stone-500 text-xl rounded-xl hover:text-pink-600 hover:shadow-lg hover:shadow-pink-600/30 hover:scale-110 transition-all duration-300 border border-stone-200 ${
+                isCollapsed ? 'lg:p-2' : 'p-3'
+              }`}
+              title="Instagram"
             >
               <RiInstagramFill />
             </Link>
           </div>
 
           {/* Contact & Copyright */}
-          <div className="space-y-1">
+          <div className={`space-y-1 ${isCollapsed ? 'lg:hidden' : ''}`}>
             <Link
               to={"/contact"}
               className="block text-stone-600 font-semibold hover:text-[#d6482b] transition-all duration-300 hover:translate-x-1"
@@ -232,20 +215,6 @@ const SideDrawer = () => {
               Contact Us →
             </Link>
             <p className="text-stone-500 text-sm">&copy; BidBazaar, LLC.</p>
-            {/* <p className="text-stone-500 text-sm">
-              Designed By{" "}
-            </p>
-            <p className="text-stone-500 text-sm">
-              <Link
-                to={"/"}
-                className="font-semibold hover:text-[#d6482b] transition-all duration-300"
-              >
-                Saad Ali Khan
-                Enayat Ur Rehman
-                Ammar Bin Amir
-              </Link>
-            </p> */}
-
           </div>
         </div>
       </div>

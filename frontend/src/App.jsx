@@ -1,56 +1,163 @@
-import React, { useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import SideDrawer from "./layout/SideDrawer";
-import Home from "./pages/Home";
+import React, { useEffect, useState } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { ThemeProvider } from "./contexts/ThemeContext";
+
+// Layout Components
+import SideDrawer from "./layout/SideDrawer";
+import Header from "./layout/Header";
+import ProtectedRoute from "./layout/ProtectedRoute";
+
+// Redux Actions
+import { fetchUser } from "./store/slices/userSlice";
+import { getAllAuctionItems } from "./store/slices/auctionSlice";
+import { fetchLeaderboard } from "./store/slices/userSlice";
+
+// Public Pages
+import Home from "./pages/Home";
 import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
-import SubmitCommission from "./pages/SubmitCommission";
-import { useDispatch } from "react-redux";
-import { fetchLeaderboard, fetchUser } from "./store/slices/userSlice";
 import HowItWorks from "./pages/HowItWorks";
 import About from "./pages/About";
-import { getAllAuctionItems } from "./store/slices/auctionSlice";
+import Contact from "./pages/Contact";
 import Leaderboard from "./pages/Leaderboard";
 import Auctions from "./pages/Auctions";
 import AuctionItem from "./pages/AuctionItem";
+
+// Protected Pages
+import Dashboard from "./pages/Dashboard/Dashboard";
 import CreateAuction from "./pages/CreateAuction";
 import ViewMyAuctions from "./pages/ViewMyAuctions";
 import ViewAuctionDetails from "./pages/ViewAuctionDetails";
-import Dashboard from "./pages/Dashboard/Dashboard";
-import Contact from "./pages/Contact";
+import SubmitCommission from "./pages/SubmitCommission";
 import UserProfile from "./pages/UserProfile";
 
 const App = () => {
   const dispatch = useDispatch();
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
   useEffect(() => {
     dispatch(fetchUser());
     dispatch(getAllAuctionItems());
     dispatch(fetchLeaderboard());
-  }, []);
+  }, [dispatch]);
+
+  const handleToggleSidebar = (collapsed) => {
+    setSidebarCollapsed(collapsed);
+  };
+
   return (
-    <Router>
-      <SideDrawer />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/sign-up" element={<SignUp />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/submit-commission" element={<SubmitCommission />} />
-        <Route path="/how-it-works-info" element={<HowItWorks />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/leaderboard" element={<Leaderboard />} />
-        <Route path="/auctions" element={<Auctions />} />
-        <Route path="/auction/item/:id" element={<AuctionItem />} />
-        <Route path="/create-auction" element={<CreateAuction />} />
-        <Route path="/view-my-auctions" element={<ViewMyAuctions />} />
-        <Route path="/auction/details/:id" element={<ViewAuctionDetails />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/me" element={<UserProfile />} />
-      </Routes>
-      <ToastContainer position="top-right" />
-    </Router>
+    <ThemeProvider>
+      <Router>
+        <div className="flex h-screen overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+          {/* Sidebar */}
+          <SideDrawer 
+            isCollapsed={sidebarCollapsed} 
+            onToggleCollapse={handleToggleSidebar}
+          />
+
+          {/* Main Content Area */}
+          <div 
+            className={`flex-1 flex flex-col overflow-hidden transition-all duration-500 ${
+              sidebarCollapsed ? 'lg:ml-[80px]' : 'lg:ml-[320px]'
+            }`}
+          >
+            {/* Header */}
+            <Header 
+              title="BidBazaar"
+              subtitle="Online Auction Platform"
+              toggleSidebar={handleToggleSidebar}
+              sidebarCollapsed={sidebarCollapsed}
+            />
+
+            {/* Main Body */}
+            <main className="flex-1 overflow-y-auto bg-gradient-to-br from-[#fdfbf7] via-[#fff5f0] to-[#ffe8e0]">
+              <Routes>
+                {/* ========== PUBLIC ROUTES ========== */}
+                <Route path="/" element={<Home />} />
+                <Route path="/sign-up" element={<SignUp />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/how-it-works-info" element={<HowItWorks />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/leaderboard" element={<Leaderboard />} />
+                <Route path="/auctions" element={<Auctions />} />
+                <Route path="/auction/item/:id" element={<AuctionItem />} />
+
+                {/* ========== SUPER ADMIN PROTECTED ROUTES ========== */}
+                <Route
+                  path="/dashboard"
+                  element={
+                    <ProtectedRoute allowedRoles={['Super Admin']}>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  }
+                />
+
+                {/* ========== AUCTIONEER PROTECTED ROUTES ========== */}
+                <Route
+                  path="/create-auction"
+                  element={
+                    <ProtectedRoute allowedRoles={['Auctioneer']}>
+                      <CreateAuction />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/view-my-auctions"
+                  element={
+                    <ProtectedRoute allowedRoles={['Auctioneer']}>
+                      <ViewMyAuctions />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/auction/details/:id"
+                  element={
+                    <ProtectedRoute allowedRoles={['Auctioneer']}>
+                      <ViewAuctionDetails />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/submit-commission"
+                  element={
+                    <ProtectedRoute allowedRoles={['Auctioneer']}>
+                      <SubmitCommission />
+                    </ProtectedRoute>
+                  }
+                />
+
+                {/* ========== SHARED PROTECTED ROUTES ========== */}
+                <Route
+                  path="/me"
+                  element={
+                    <ProtectedRoute allowedRoles={['Auctioneer', 'Bidder', 'Super Admin']}>
+                      <UserProfile />
+                    </ProtectedRoute>
+                  }
+                />
+
+                {/* ========== FALLBACK ROUTE ========== */}
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </main>
+          </div>
+        </div>
+
+        {/* Toast Notifications */}
+        <ToastContainer 
+          position="top-right" 
+          theme="light"
+          toastStyle={{
+            background: 'linear-gradient(135deg, #fdfbf7 0%, #fff5f0 100%)',
+            border: '1px solid #ffe8e0',
+          }}
+        />
+      </Router>
+    </ThemeProvider>
   );
 };
 

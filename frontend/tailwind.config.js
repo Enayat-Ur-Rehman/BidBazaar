@@ -9,6 +9,7 @@ export default {
     './app/**/*.{js,jsx}',
     './src/**/*.{js,jsx}',
   ],
+  darkMode: 'class',
   prefix: "",
   theme: {
     container: {
