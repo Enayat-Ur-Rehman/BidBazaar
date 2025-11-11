@@ -21,6 +21,10 @@ const Header = ({ title, subtitle, toggleSidebar, sidebarCollapsed }) => {
     }
   };
 
+  if (user?.isAuthenticated === false) {
+    return null;
+  } else {
+    
   return (
     <header className="h-24 bg-white border-b border-stone-200 px-4 lg:px-6 sticky right-0 top-0 z-10 shadow-sm">
       <div className="flex items-center justify-between h-full">
@@ -132,5 +136,6 @@ const Header = ({ title, subtitle, toggleSidebar, sidebarCollapsed }) => {
     </header>
   );
 };
+}
 
 export default Header;
