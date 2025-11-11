@@ -31,7 +31,7 @@ const Dashboard = () => {
           <Spinner />
         </div>
       ) : (
-        <div className="min-h-screen p-6 lg:p-8">
+        <div className="w-full h-full px-5 py-8 lg:px-8">
           
           {/* Header Section */}
           <div className="mb-8">
@@ -44,7 +44,7 @@ const Dashboard = () => {
           </div>
 
           {/* Content Sections */}
-          <div className="space-y-8">
+          <div className="space-y-8 pb-8">
             
             {/* Monthly Total Payments Received */}
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-stone-200 hover:shadow-md transition-shadow">
