@@ -7,7 +7,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const { loading, isAuthenticated } = useSelector((state) => state.user);
+  const { loading, isAuthenticated, user } = useSelector((state) => state.user);
 
   const navigateTo = useNavigate();
   const dispatch = useDispatch();
@@ -21,10 +21,19 @@ const Login = () => {
   };
 
   useEffect(() => {
-    if (isAuthenticated) {
-      navigateTo("/");
+    if (isAuthenticated && user) {
+      // Redirect based on user role
+      if (user.role === "Auctioneer") {
+        navigateTo("/view-my-auctions");
+      } else if (user.role === "Bidder") {
+        navigateTo("/auctions");
+      } else if (user.role === "Super Admin") {
+        navigateTo("/dashboard");
+      } else {
+        navigateTo("/");
+      }
     }
-  }, [dispatch, isAuthenticated, loading]);
+  }, [isAuthenticated, user, navigateTo]);
 
   return (
     <>
