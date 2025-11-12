@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoMdCloseCircleOutline } from "react-icons/io";
-import { FaFacebook } from "react-icons/fa";
+import { FaFacebook, FaSignInAlt, FaSignOutAlt, FaUserPlus } from "react-icons/fa";
 import { RiInstagramFill } from "react-icons/ri";
 import { logout } from "@/store/slices/userSlice";
 import sidebarRoutes from "@/config/sidebarRoutes";
@@ -100,7 +100,10 @@ const SideDrawer = ({ isCollapsed = false, onToggleCollapse }) => {
           <Link to={"/"} className={`block mb-8 group ${isCollapsed ? 'lg:mb-4' : ''}`}>
             <h4 className={`text-3xl font-bold mb-2 transition-all duration-300 group-hover:scale-105 ${isCollapsed ? 'lg:text-xl lg:mb-0' : ''}`}>
               {isCollapsed ? (
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D6482b] to-[#ff6b4a] hidden lg:block">B</span>
+                <div className="flex items-center justify-center">
+                  B<span className=" text-transparent bg-clip-text bg-gradient-to-r from-[#D6482b] to-[#ff6b4a]">B</span>
+                </div>
+             
               ) : (
                 <>
                   Bid<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D6482b] to-[#ff6b4a]">Bazaar</span>
@@ -126,33 +129,31 @@ const SideDrawer = ({ isCollapsed = false, onToggleCollapse }) => {
             <div className={`my-6 flex gap-3 ${isCollapsed ? 'lg:flex-col lg:gap-2' : ''}`}>
               <Link
                 to={"/sign-up"}
-                className={`flex-1 bg-gradient-to-r from-[#D6482B] to-[#b8381e] font-semibold hover:shadow-lg hover:shadow-[#D6482B]/50 py-3 px-4 rounded-xl text-white text-center transition-all duration-300 hover:scale-105 active:scale-95 ${
+                className={`flex flex-1 items-center justify-center bg-gradient-to-r from-[#D6482B] to-[#b8381e] font-semibold hover:shadow-lg hover:shadow-[#D6482B]/50 py-3 px-4 rounded-xl text-white text-center transition-all duration-300 hover:scale-105 active:scale-95 ${
                   isCollapsed ? 'lg:text-sm lg:py-2 lg:px-2' : 'text-lg'
                 }`}
               >
-                {isCollapsed ? <span className="lg:hidden">Sign Up</span> : 'Sign Up'}
-                {isCollapsed && <span className="hidden lg:inline">Sign Up</span>}
+                {isCollapsed ? <FaUserPlus size={20}></FaUserPlus> : 'Sign Up'}
               </Link>
               <Link
                 to={"/login"}
-                className={`flex-1 text-[#D6482B] bg-white border-2 border-[#D6482B] hover:bg-[#D6482B] hover:text-white font-semibold py-3 px-4 rounded-xl text-center transition-all duration-300 hover:scale-105 active:scale-95 ${
+                className={`flex flex-1 items-center justify-center text-[#D6482B] bg-white border-2 border-[#D6482B] hover:bg-[#D6482B] hover:text-white font-semibold py-3 px-4 rounded-xl text-center transition-all duration-300 hover:scale-105 active:scale-95 ${
                   isCollapsed ? 'lg:text-sm lg:py-2 lg:px-2' : 'text-lg'
                 }`}
               >
-                {isCollapsed ? <span className="lg:hidden">Login</span> : 'Login'}
-                {isCollapsed && <span className="hidden lg:inline">Login</span>}
+                {isCollapsed ? <FaSignInAlt size={20}></FaSignInAlt>: 'Login'}
+                
               </Link>
             </div>
           ) : (
             <div className="my-6">
               <button
                 onClick={handleLogout}
-                className={`w-full bg-gradient-to-r from-[#D6482B] to-[#b8381e] font-semibold hover:shadow-lg hover:shadow-[#D6482B]/50 py-3 px-4 rounded-xl text-white transition-all duration-300 hover:scale-105 active:scale-95 ${
+                className={`w-full flex flex-1 items-center justify-center bg-gradient-to-r from-[#D6482B] to-[#b8381e] font-semibold hover:shadow-lg hover:shadow-[#D6482B]/50 py-3 px-4 rounded-xl text-white transition-all duration-300 hover:scale-105 active:scale-95 ${
                   isCollapsed ? 'lg:text-sm lg:py-2 lg:px-2' : 'text-lg'
                 }`}
               >
-                {isCollapsed ? <span className="lg:hidden">Logout</span> : 'Logout'}
-                {isCollapsed && <span className="hidden lg:inline">Logout</span>}
+                {isCollapsed ? <FaSignOutAlt size={20}></FaSignOutAlt> : 'Logout'}
               </button>
             </div>
           )}
