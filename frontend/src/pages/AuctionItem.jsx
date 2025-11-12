@@ -35,7 +35,7 @@ const AuctionItem = () => {
   }, [isAuthenticated]);
   return (
     <>
-      <section className="w-full ml-0 m-0 h-fit px-5 pt-20 lg:pl-[320px] flex flex-col">
+      <section className="w-full  px-5 lg:px-8 py-8 flex flex-col items-center justify-center">
         <div className="text-[16px] flex flex-wrap gap-2 items-center">
           <Link
             to="/"

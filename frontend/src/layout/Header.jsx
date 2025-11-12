@@ -43,7 +43,7 @@ const Header = ({ title, subtitle, toggleSidebar, sidebarCollapsed }) => {
             </h1>
             {subtitle && (
               <p className="text-sm text-stone-600 hidden sm:block mt-0.5">
-                {subtitle}
+                {`${subtitle} - ${user.role} Dashboard`}
               </p>
             )}
           </div>

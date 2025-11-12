@@ -32,7 +32,7 @@ const SubmitCommission = () => {
   };
 
   return (
-    <section className="flex-1 flex flex-col w-full px-5 py-6">
+    <section className="flex-1 flex flex-col w-full px-5 py-8 lg:px-8 justify-center items-center">
       <div className="max-w-3xl w-full mx-auto bg-white rounded-xl shadow-md p-6 md:p-8 flex flex-col gap-6">
         <h2 className="text-[#D6482B] font-bold text-2xl md:text-3xl lg:text-4xl text-center">
           Submit Payment Proof

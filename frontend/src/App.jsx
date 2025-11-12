@@ -86,7 +86,7 @@ const AppContent = () => {
         )}
 
         {/* ===== Main Body ===== */}
-        <main className="h-screen flex-1 overflow-y-auto bg-gradient-to-br from-[#fdfbf7] via-[#fff5f0] to-[#ffe8e0]">
+        <main className="flex-1 overflow-y-auto bg-gradient-to-br from-[#fdfbf7] via-[#fff5f0] to-[#ffe8e0] ">
           <Routes>
             {/* ========== PUBLIC ROUTES ========== */}
             <Route path="/" element={<Home />} />
@@ -103,7 +103,7 @@ const AppContent = () => {
             <Route
               path="/dashboard"
               element={
-                <ProtectedRoute allowedRoles={["Super Admin , Bidder"]}>
+                <ProtectedRoute allowedRoles={["Super Admin" , "Bidder"]}>
                   <Dashboard />
                 </ProtectedRoute>
               }

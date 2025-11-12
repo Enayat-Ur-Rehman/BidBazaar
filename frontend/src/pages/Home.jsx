@@ -1,8 +1,122 @@
 
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { ArrowRight, Gavel, TrendingUp, Award, Shield, Zap, Users, Target } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import { ArrowRight, Gavel, TrendingUp, Award, Shield, Zap, Users, Target,Menu, X  } from "lucide-react";
+
+
+const Navbar = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    setIsMenuOpen(false); // close menu when navigating
+  }, [location]);
+
+  const navLinks = [
+    { label: "Home", path: "/" },
+    { label: "Auctions", path: "/auctions" },
+    { label: "Leaderboard", path: "/leaderboard" },
+    { label: "How It Works", path: "/how-it-works-info" },
+    { label: "About", path: "/about" },
+    { label: "Contact", path: "/contact" },
+  ];
+
+  return (
+    <nav
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 backdrop-blur-xl`}
+    >
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
+        {/* Logo */}
+        <Link to="/" className="flex items-center gap-2 group">
+            <div className="w-10 h-10 bg-gradient-to-br from-[#D6482B] to-[#ff6b4a] rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+              <Gavel className="w-6 h-6 text-white" />
+            </div>
+            <span className="text-2xl font-bold">
+              Bid<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D6482B] to-[#ff6b4a]">Bazaar</span>
+            </span>
+        </Link>
+
+        {/* Desktop Menu */}
+        <div className="hidden md:flex items-center gap-8">
+          {navLinks.map((link) => (
+            <Link
+              key={link.path}
+              to={link.path}
+              className={`text-stone-700 font-medium transition-colors ${
+                location.pathname === link.path
+                  ? "text-[#D6482B]"
+                  : "hover:text-[#D6482B]"
+              }`}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
+
+        {/* Auth Buttons */}
+        <div className="hidden md:flex items-center gap-3">
+          <Link
+            to="/login"
+            className="px-4 py-2 border-2 border-[#D6482B] text-[#D6482B] rounded-xl font-semibold hover:bg-[#D6482B] hover:text-white transition-all duration-300"
+          >
+            Login
+          </Link>
+          <Link
+            to="/sign-up"
+            className="px-4 py-2 bg-gradient-to-r from-[#D6482B] to-[#b8381e] text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-[#D6482B]/40 transition-all duration-300"
+          >
+            Sign Up
+          </Link>
+        </div>
+
+        {/* Mobile Menu Button */}
+        <button
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          className="md:hidden text-[#D6482B] focus:outline-none"
+        >
+          {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
+        </button>
+      </div>
+
+      {/* Mobile Menu */}
+      {isMenuOpen && (
+        <div className="md:hidden bg-white border-t border-stone-200 shadow-lg">
+          <div className="flex flex-col items-center py-4 space-y-3">
+            {navLinks.map((link) => (
+              <Link
+                key={link.path}
+                to={link.path}
+                className={`text-stone-700 font-medium text-lg ${
+                  location.pathname === link.path
+                    ? "text-[#D6482B]"
+                    : "hover:text-[#D6482B]"
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
+            <div className="flex gap-3 mt-4">
+              <Link
+                to="/login"
+                className="px-4 py-2 border-2 border-[#D6482B] text-[#D6482B] rounded-xl font-semibold hover:bg-[#D6482B] hover:text-white transition-all duration-300"
+              >
+                Login
+              </Link>
+              <Link
+                to="/sign-up"
+                className="px-4 py-2 bg-gradient-to-r from-[#D6482B] to-[#b8381e] text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-[#D6482B]/40 transition-all duration-300"
+              >
+                Sign Up
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+    </nav>
+  );
+};
+
 
 // Hero Section Component
 const HeroSection = ({ isAuthenticated }) => {
@@ -13,7 +127,7 @@ const HeroSection = ({ isAuthenticated }) => {
   }, []);
 
   return (
-    <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden px-5 py-20">
+    <section className="mt-4 relative min-h-[80vh] flex items-center justify-center overflow-hidden px-5 py-20">
       {/* Animated Background */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 opacity-30">
@@ -39,7 +153,7 @@ const HeroSection = ({ isAuthenticated }) => {
           Join the most transparent and exciting online auction platform. Bid smart, win big, and experience the future of online auctions.
         </p>
 
-        {!isAuthenticated && (
+        {/* {!isAuthenticated && (
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in delay-600">
             <Link
               to="/sign-up"
@@ -56,7 +170,7 @@ const HeroSection = ({ isAuthenticated }) => {
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
-        )}
+        )} */}
 
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 animate-fade-in delay-800">
@@ -341,17 +455,67 @@ const CTASection = ({ isAuthenticated }) => {
   );
 };
 
+const Footer = () => {
+  return (
+    <footer className="bg-[#111] text-white py-12 px-5">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+          <div>
+            <h3 className="text-2xl font-bold mb-4">
+              Bid<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D6482B] to-[#ff6b4a]">Bazaar</span>
+            </h3>
+            <p className="text-stone-400">
+              The most transparent and exciting online auction platform.
+            </p>
+          </div>
+          
+          <div>
+            <h4 className="font-bold mb-4">Quick Links</h4>
+            <div className="flex flex-col gap-2">
+              <Link to="/auctions" className="text-stone-400 hover:text-[#D6482B] transition-colors">Auctions</Link>
+              <Link to="/how-it-works-info" className="text-stone-400 hover:text-[#D6482B] transition-colors">How It Works</Link>
+              <Link to="/leaderboard" className="text-stone-400 hover:text-[#D6482B] transition-colors">Leaderboard</Link>
+            </div>
+          </div>
+          
+          <div>
+            <h4 className="font-bold mb-4">Company</h4>
+            <div className="flex flex-col gap-2">
+              <Link to="/about" className="text-stone-400 hover:text-[#D6482B] transition-colors">About Us</Link>
+              <Link to="/contact" className="text-stone-400 hover:text-[#D6482B] transition-colors">Contact</Link>
+            </div>
+          </div>
+          
+          <div>
+            <h4 className="font-bold mb-4">Legal</h4>
+            <div className="flex flex-col gap-2">
+              <a href="#" className="text-stone-400 hover:text-[#D6482B] transition-colors">Privacy Policy</a>
+              <a href="#" className="text-stone-400 hover:text-[#D6482B] transition-colors">Terms of Service</a>
+            </div>
+          </div>
+        </div>
+        
+        <div className="border-t border-stone-800 pt-8 text-center text-stone-400">
+          <p>&copy; 2024 BidBazaar, LLC. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+  );
+};
+
 // Main Home Page Component (works within existing layout)
 const Home = () => {
   const { isAuthenticated } = useSelector((state) => state.user);
 
   return (
     <div className="w-full min-h-screen">
+      <Navbar></Navbar>
       <HeroSection isAuthenticated={isAuthenticated} />
       <HowItWorksSection />
       <FeaturedAuctionsSection />
       <WhyChooseUsSection />
       <CTASection isAuthenticated={isAuthenticated} />
+      <Footer></Footer>
       
       <style jsx>{`
         @keyframes fade-in {
@@ -411,3 +575,4 @@ const Home = () => {
 };
 
 export default Home;
+
