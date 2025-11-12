@@ -44,25 +44,13 @@ const sidebarRoutes = {
     },
   ],
   
-  // Bidder specific routes (if needed in future)
+  // Bidder specific routes 
   bidder: [
-    { 
-      href: '/dashboard/bidder', 
-      label: 'Dashboard', 
-      icon: LayoutDashboard 
-    },
-    { 
-      href: '/dashboard/bidder/my-bids', 
-      label: 'My Bids', 
-      icon: FileText 
-    },
-    { 
-      href: '/dashboard/bidder/won-items', 
-      label: 'Won Items', 
-      icon: Package 
-    },
+    { href: '/bidder', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/bidder/my-bids', label: 'My Bids', icon: FileText },
+    { href: '/bidder/won-items', label: 'Won Items', icon: Package },
   ],
-  
+
   // Secondary navigation (always visible)
   secondary: [
     { 
