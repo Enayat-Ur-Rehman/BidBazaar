@@ -281,7 +281,7 @@ const ViewMyAuctions = () => {
             </p>
             {!searchQuery && filterStatus === "all" && (
               <button 
-                onClick={() => navigateTo("/submit-auction")}
+                onClick={() => navigateTo("/create-auction")}
                 className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold px-6 py-3 rounded-xl transition-all shadow-lg hover:shadow-xl"
               >
                 <Plus className="w-5 h-5" />

@@ -42,6 +42,7 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { Search, Filter, Clock, TrendingUp, Flame, ChevronDown, Grid3x3, List, Tag } from "lucide-react";
+import Card from "@/custom-components/Card";
 
 const Auctions = () => {
   const { allAuctions, loading } = useSelector((state) => state.auction);
@@ -100,143 +101,6 @@ const Auctions = () => {
     if (now > end) return { label: "Ended", color: "bg-gray-500" };
     return { label: "Live", color: "bg-green-500" };
   };
-
-  const getTimeRemaining = (endTime) => {
-    const now = new Date();
-    const end = new Date(endTime);
-    const diff = end - now;
-
-    if (diff <= 0) return "Ended";
-
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-
-    if (days > 0) return `${days}d ${hours}h`;
-    if (hours > 0) return `${hours}h ${minutes}m`;
-    return `${minutes}m`;
-  };
-
-  const AuctionCard = ({ auction }) => {
-    const status = getAuctionStatus(auction.startTime, auction.endTime);
-    const timeRemaining = getTimeRemaining(auction.endTime);
-    const isLive = status.label === "Live";
-
-    return (
-      <div className="group bg-white rounded-2xl shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100 hover:border-orange-200 cursor-pointer">
-        {/* Image Container */}
-        <div className="relative h-64 overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
-          <img
-            src={auction.image?.url || "/api/placeholder/400/300"}
-            alt={auction.title}
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-          />
-          
-          {/* Status Badge */}
-          <div className="absolute top-4 left-4 flex items-center gap-2">
-            <span className={`${status.color} text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1`}>
-              {isLive && <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>}
-              {status.label}
-            </span>
-          </div>
-
-          {/* Time Remaining */}
-          {status.label !== "Ended" && (
-            <div className="absolute top-4 right-4 bg-black/70 backdrop-blur-sm text-white text-xs font-medium px-3 py-1.5 rounded-full flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5" />
-              {timeRemaining}
-            </div>
-          )}
-
-          {/* Hot Badge for ending soon */}
-          {isLive && new Date(auction.endTime) - new Date() < 3600000 && (
-            <div className="absolute bottom-4 left-4 bg-red-500 text-white text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1 animate-pulse">
-              <Flame className="w-3.5 h-3.5" />
-              Ending Soon!
-            </div>
-          )}
-        </div>
-
-        {/* Content */}
-        <div className="p-6">
-          <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-orange-600 transition-colors">
-            {auction.title}
-          </h3>
-
-          {/* Price Section */}
-          <div className="space-y-3">
-            <div className="flex items-baseline gap-2">
-              <span className="text-sm text-gray-600 font-medium">Current Bid</span>
-            </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-bold text-gray-900">
-                ${auction.startingBid?.toLocaleString()}
-              </span>
-              <TrendingUp className="w-5 h-5 text-green-500" />
-            </div>
-          </div>
-
-          {/* Footer */}
-          <div className="mt-6 pt-4 border-t border-gray-100">
-            <button className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold py-3 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
-              {status.label === "Ended" ? "View Results" : "Place Bid"}
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const AuctionListItem = ({ auction }) => {
-    const status = getAuctionStatus(auction.startTime, auction.endTime);
-    const timeRemaining = getTimeRemaining(auction.endTime);
-
-    return (
-      <div className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 hover:border-orange-200 cursor-pointer p-4 flex gap-6">
-        <img
-          src={auction.image?.url || "/api/placeholder/200/150"}
-          alt={auction.title}
-          className="w-48 h-32 object-cover rounded-lg flex-shrink-0"
-        />
-        <div className="flex-1 flex flex-col justify-between">
-          <div>
-            <div className="flex items-center gap-3 mb-2">
-              <span className={`${status.color} text-white text-xs font-semibold px-2.5 py-1 rounded-full`}>
-                {status.label}
-              </span>
-              {status.label !== "Ended" && (
-                <span className="text-sm text-gray-600 flex items-center gap-1">
-                  <Clock className="w-4 h-4" />
-                  {timeRemaining}
-                </span>
-              )}
-            </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">{auction.title}</h3>
-          </div>
-          <div className="flex items-center justify-between">
-            <div>
-              <span className="text-sm text-gray-600">Current Bid</span>
-              <div className="text-2xl font-bold text-gray-900">${auction.startingBid?.toLocaleString()}</div>
-            </div>
-            <button className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold px-6 py-2.5 rounded-lg transition-all">
-              {status.label === "Ended" ? "View Results" : "Place Bid"}
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-orange-50">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600 font-medium">Loading amazing auctions...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-orange-50 to-gray-50">
@@ -351,14 +215,33 @@ const Auctions = () => {
           </div>
         ) : viewMode === "grid" ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredAuctions.map((auction) => (
-              <AuctionCard key={auction._id} auction={auction} />
+            {filteredAuctions.map((element) => (
+              // <AuctionCard key={auction._id} auction={auction} />
+               <Card
+                  title={element.title}
+                  startTime={element.startTime}
+                  endTime={element.endTime}
+                  imgSrc={element.image?.url}
+                  startingBid={element.startingBid}
+                  id={element._id}
+                  key={element._id}
+                />
             ))}
+           
           </div>
         ) : (
           <div className="space-y-6">
-            {filteredAuctions.map((auction) => (
-              <AuctionListItem key={auction._id} auction={auction} />
+            {filteredAuctions.map((element) => (
+              // <AuctionCard key={auction._id} auction={auction} />
+               <Card
+                  title={element.title}
+                  startTime={element.startTime}
+                  endTime={element.endTime}
+                  imgSrc={element.image?.url}
+                  startingBid={element.startingBid}
+                  id={element._id}
+                  key={element._id}
+                />
             ))}
           </div>
         )}
