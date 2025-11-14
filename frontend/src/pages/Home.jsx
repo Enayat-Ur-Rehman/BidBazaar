@@ -153,7 +153,7 @@ const HeroSection = ({ isAuthenticated }) => {
           Join the most transparent and exciting online auction platform. Bid smart, win big, and experience the future of online auctions.
         </p>
 
-        {/* {!isAuthenticated && (
+        {!isAuthenticated && (
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in delay-600">
             <Link
               to="/sign-up"
@@ -170,7 +170,7 @@ const HeroSection = ({ isAuthenticated }) => {
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
-        )} */}
+        )}
 
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 animate-fade-in delay-800">

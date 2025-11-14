@@ -12,7 +12,7 @@ const Header = ({ title, subtitle, toggleSidebar, sidebarCollapsed }) => {
 
   const handleLogout = () => {
     dispatch(logout());
-    navigate('/login');
+    navigate('/');
   };
 
   const handleToggleSidebar = () => {
