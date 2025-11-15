@@ -1,5 +1,5 @@
 import express from "express";
-import { placeBid } from "../controllers/bidController.js";
+import { getMyBids, placeBid } from "../controllers/bidController.js";
 import { isAuthenticated, isAuthorized } from "../middlewares/auth.js";
 import { checkAuctionEndTime } from "../middlewares/checkAuctionEndTime.js";
 
@@ -12,5 +12,7 @@ router.post(
   checkAuctionEndTime,
   placeBid
 );
+
+router.get("/myBids",isAuthenticated,getMyBids);
 
 export default router;

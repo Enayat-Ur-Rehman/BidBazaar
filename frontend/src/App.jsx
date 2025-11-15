@@ -48,7 +48,7 @@ const AppContent = () => {
   const location = useLocation();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
-  // ✅ Hide sidebar + header only when path is "/"
+  // Hide sidebar + header only when path is "/"
   const hideLayout = location.pathname === "/";
 
   const handleToggleSidebar = (collapsed) => {
@@ -145,6 +145,7 @@ const AppContent = () => {
               }
             />
 
+
             <Route
               path="/me"
               element={
@@ -155,6 +156,18 @@ const AppContent = () => {
                 </ProtectedRoute>
               }
             />
+
+            {/* ========== BIDDER ROUTES ========== */}
+            <Route
+              path="/bidder/myBids"
+              element={
+                <ProtectedRoute allowedRoles={["Bidder"]}>
+                  <MyBids />
+                </ProtectedRoute>
+              }
+            />
+
+          
 
             {/* ========== FALLBACK ========== */}
             <Route path="*" element={<Navigate to="/" replace />} />
