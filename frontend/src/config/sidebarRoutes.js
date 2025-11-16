@@ -48,7 +48,7 @@ const sidebarRoutes = {
   bidder: [
     { href: '/bidder/myBids', label: 'My Bids', icon: FileText },
     { href: '/bidder/myPayments', label: 'My Payments', icon: CreditCard },
-    
+    { href: '/bidder/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   ],
 
   // Secondary navigation (always visible)

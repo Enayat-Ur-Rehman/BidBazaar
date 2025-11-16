@@ -40,6 +40,7 @@ import ViewAuctionDetails from "./pages/ViewAuctionDetails";
 import SubmitCommission from "./pages/SubmitCommission";
 import UserProfile from "./pages/UserProfile";
 import MyBids from "./pages/Bidder/MyBids";
+import BidderDashboard from "./pages/Bidder/BidderDash";
 
 
 import PendingPayments from "./pages/Payment/PendingPages";
@@ -188,6 +189,17 @@ const AppContent = () => {
                 </ProtectedRoute>
               }
             ></Route>
+
+            <Route
+              path="/bidder/dashboard"
+              element={
+                <ProtectedRoute allowedRoles={["Bidder"]}>
+                  <BidderDashboard></BidderDashboard>
+                </ProtectedRoute>
+              }
+            ></Route>
+
+
 
             <Route
               path="/payment/success"
