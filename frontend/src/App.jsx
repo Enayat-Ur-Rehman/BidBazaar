@@ -39,17 +39,21 @@ import ViewMyAuctions from "./pages/ViewMyAuctions";
 import ViewAuctionDetails from "./pages/ViewAuctionDetails";
 import SubmitCommission from "./pages/SubmitCommission";
 import UserProfile from "./pages/UserProfile";
-import BidderDash from "./pages/Bidder/BidderDash";
 import MyBids from "./pages/Bidder/MyBids";
-import WonBids from "./pages/Bidder/WonBids";
+
+
+import PendingPayments from "./pages/Payment/PendingPages";
+import PaymentCheckout from "./pages/Payment/PaymentCheckout";
+import PaymentCancel from "./pages/Payment/PaymentCancel";
+import PaymentSuccess from "./pages/Payment/PaymentSuccess";
 
 // --- AppContent handles route-based layout ---
 const AppContent = () => {
   const location = useLocation();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
-  // ✅ Hide sidebar + header only when path is "/"
-  const hideLayout = location.pathname === "/" || location.pathname === "/login" || location.pathname === "/sign-up";
+  // Hide sidebar + header only when path is "/"
+  const hideLayout = location.pathname === "/" || location.pathname === "/login"  || location.pathname === "/sign-up";
 
   const handleToggleSidebar = (collapsed) => {
     setSidebarCollapsed(collapsed);
@@ -153,23 +157,6 @@ const AppContent = () => {
               }
             />
 
-            <Route
-              path="/my-bids"
-              element={
-                <ProtectedRoute allowedRoles={["Bidder"]}>
-                  <MyBids />
-                </ProtectedRoute>
-              }
-            />
-
-            <Route
-              path="/won-bids"
-              element={
-                <ProtectedRoute allowedRoles={["Bidder"]}>
-                  <WonBids />
-                </ProtectedRoute>
-              }
-            />
 
             <Route
               path="/me"
@@ -181,6 +168,51 @@ const AppContent = () => {
                 </ProtectedRoute>
               }
             />
+
+            {/* ========== BIDDER ROUTES ========== */}
+            <Route
+              path="/bidder/myBids"
+              element={
+                <ProtectedRoute allowedRoles={["Bidder"]}>
+                  <MyBids />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/bidder/myPayments"
+              element={
+                <ProtectedRoute allowedRoles={["Bidder"]}>
+                  <PendingPayments></PendingPayments>
+                </ProtectedRoute>
+              }
+            ></Route>
+
+            <Route
+              path="/payment/:paymentId"
+              element={
+                <ProtectedRoute allowedRoles={["Bidder"]}>
+                  <PaymentCheckout></PaymentCheckout>
+                </ProtectedRoute>
+              }
+            ></Route>
+
+            <Route
+              path="/payment/success"
+              element={
+                <PaymentSuccess></PaymentSuccess>
+              }
+            ></Route>
+
+            <Route
+              path="/payment/cancel"
+              element={
+                <PaymentCancel></PaymentCancel>
+              }
+            ></Route>
+
+
+          
 
             {/* ========== FALLBACK ========== */}
             <Route path="*" element={<Navigate to="/" replace />} />

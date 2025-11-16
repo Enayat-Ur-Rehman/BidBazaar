@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { FaGreaterThan, FaClock, FaTrophy, FaHistory, FaEye, FaHeart, FaShare, FaInfoCircle } from "react-icons/fa";
 import { RiAuctionFill, RiTimerFlashLine } from "react-icons/ri";

@@ -1,5 +1,5 @@
 
-import { LayoutDashboard, Gavel, FileText, Users, DollarSign, Settings, Package, BarChart3, User, Eye,PlusCircle,Info,HelpCircle} from 'lucide-react';
+import { LayoutDashboard, Gavel, FileText, Users, DollarSign, Settings, Package, BarChart3, User, Eye,PlusCircle,Info,HelpCircle, CreditCard} from 'lucide-react';
 
 const sidebarRoutes = {
   // Common routes for all users
@@ -45,11 +45,12 @@ const sidebarRoutes = {
   ],
   
   // Bidder specific routes 
-bidder: [
-  { href: '/bidderdashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/my-bids', label: 'My Bids', icon: FileText },
-  { href: '/won-bids', label: 'Won Items', icon: Package },
-],
+  bidder: [
+    { href: '/bidder/myBids', label: 'My Bids', icon: FileText },
+    { href: '/bidder/myPayments', label: 'My Payments', icon: CreditCard },
+    
+  ],
+
   // Secondary navigation (always visible)
   secondary: [
     { 

@@ -4,6 +4,7 @@ import commissionReducer from "./slices/commissionSlice";
 import auctionReducer from "./slices/auctionSlice";
 import bidReducer from "./slices/bidSlice";
 import superAdminReducer from "./slices/superAdminSlice";
+import paymentReducer from "./slices/paymentSlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,5 +13,6 @@ export const store = configureStore({
     auction: auctionReducer,
     bid: bidReducer,
     superAdmin: superAdminReducer,
+    payment: paymentReducer,
   },
 });

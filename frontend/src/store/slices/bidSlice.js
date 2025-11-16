@@ -6,10 +6,7 @@ import { getAuctionDetail } from "./auctionSlice";
 const bidSlice = createSlice({
   name: "bid",
   initialState: {
-    loading: false,
-    myBids: [],
-    wonBids: [],
-    error: null,
+    loading: false,myBids:[],myBidsLoading:false, myBidsError: null,
   },
   reducers: {
     bidRequest(state) {
@@ -22,36 +19,25 @@ const bidSlice = createSlice({
     },
     bidFailed(state, action) {
       state.loading = false;
-      state.error = action.payload;
     },
-    getMyBidsRequest(state) {
-      state.loading = true;
-      state.error = null;
+
+    myBidsRequest(state){
+      state.myBidsLoading = true;
+      state.myBidsError = null;
     },
-    getMyBidsSuccess(state, action) {
-      state.loading = false;
+    myBidsSuccess(state,action){
+      state.myBidsLoading = false;
       state.myBids = action.payload;
-      state.error = null;
+      state.myBidsError = null;
     },
-    getMyBidsFailed(state, action) {
-      state.loading = false;
+    myBidsFailed(state,action){
+      state.myBidsLoading = false;
+      state.error = action.payload;
       state.myBids = [];
-      state.error = action.payload;
     },
-    getWonBidsRequest(state) {
-      state.loading = true;
-      state.error = null;
-    },
-    getWonBidsSuccess(state, action) {
-      state.loading = false;
-      state.wonBids = action.payload;
-      state.error = null;
-    },
-    getWonBidsFailed(state, action) {
-      state.loading = false;
-      state.wonBids = [];
-      state.error = action.payload;
-    },
+    clearMyBidsError(state){
+      state.myBidsError = null;
+    }
   },
 });
 
@@ -69,49 +55,31 @@ export const placeBid = (id, data) => async (dispatch) => {
     dispatch(bidSlice.actions.bidSuccess());
     toast.success(response.data.message);
     dispatch(getAuctionDetail(id));
+
+    dispatch(fetchMyBids());
   } catch (error) {
-    const errorMsg = error.response?.data?.message || error.message || "Failed to place bid";
-    dispatch(bidSlice.actions.bidFailed(errorMsg));
+    dispatch(bidSlice.actions.bidFailed());
+    const errorMsg = error.response?.data?.message || "Failed To Place Bid";
     toast.error(errorMsg);
+    console.error("Bid error", error);
   }
 };
 
-export const getMyBids = () => async (dispatch) => {
-  dispatch(bidSlice.actions.getMyBidsRequest());
-  try {
-    const response = await axios.get(
-      `http://localhost:5000/api/v1/bid/my-bids`,
-      {
-        withCredentials: true,
-        headers: { "Content-Type": "application/json" },
-      }
+export const fetchMyBids = () => async (dispatch) =>{
+  dispatch(bidSlice.actions.myBidsRequest());
+  try{
+    const res = await axios.get(
+      "http://localhost:5000/api/v1/bid/myBids",
+      {withCredentials: true},
     );
-    dispatch(bidSlice.actions.getMyBidsSuccess(response.data.bids));
-  } catch (error) {
-    console.error("Error fetching bids:", error);
-    const errorMsg = error.response?.data?.message || error.message || "Failed to fetch bids";
-    dispatch(bidSlice.actions.getMyBidsFailed(errorMsg));
-    toast.error(errorMsg);
+    console.log("Fetced My Bids: ", res.data.bids);
+    dispatch(bidSlice.actions.myBidsSuccess(res.data.bids || []));
+  }catch(error){
+    const errorMsg = error.response?.data?.message || "Failed To Fetch Bids";
+    dispatch(bidSlice.actions.myBidsFailed(errorMsg));
+    console.log("Error Fetching Bids: ",error);
   }
-};
+}
 
-export const getWonBids = () => async (dispatch) => {
-  dispatch(bidSlice.actions.getWonBidsRequest());
-  try {
-    const response = await axios.get(
-      `http://localhost:5000/api/v1/bid/won-bids`,
-      {
-        withCredentials: true,
-        headers: { "Content-Type": "application/json" },
-      }
-    );
-    dispatch(bidSlice.actions.getWonBidsSuccess(response.data.bids));
-  } catch (error) {
-    console.error("Error fetching won bids:", error);
-    const errorMsg = error.response?.data?.message || error.message || "Failed to fetch won bids";
-    dispatch(bidSlice.actions.getWonBidsFailed(errorMsg));
-    toast.error(errorMsg);
-  }
-};
-
-export default bidSlice.reducer;
+export const {clearMyBidsError} = bidSlice.actions;
+export default bidSlice.reducer

@@ -59,6 +59,18 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  pendingPayments:[
+    {
+      type:mongoose.Schema.Types.ObjectId,
+      ref: "Payment",
+    },
+  ],
+  completePayments:[
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Payment",
+    }
+  ],
   createdAt: {
     type: Date,
     default: Date.now,

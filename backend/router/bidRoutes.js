@@ -1,5 +1,5 @@
 import express from "express";
-import { placeBid } from "../controllers/bidController.js";
+import { getMyBids, placeBid } from "../controllers/bidController.js";
 import { isAuthenticated, isAuthorized } from "../middlewares/auth.js";
 import { checkAuctionEndTime } from "../middlewares/checkAuctionEndTime.js";
 import { getMyBids } from "../controllers/bidController.js";
@@ -18,8 +18,6 @@ router.post(
   placeBid
 );
 
-router.get("/my-bids", isAuthenticated, isAuthorized("Bidder"), getMyBids);
-
-router.get("/won-bids", isAuthenticated, isAuthorized("Bidder"), getWonBids);
+router.get("/myBids",isAuthenticated,getMyBids);
 
 export default router;

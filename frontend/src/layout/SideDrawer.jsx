@@ -222,7 +222,7 @@ const SideDrawer = ({ isCollapsed = false, onToggleCollapse }) => {
         </div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         @keyframes fadeIn {
           from {
             opacity: 0;
