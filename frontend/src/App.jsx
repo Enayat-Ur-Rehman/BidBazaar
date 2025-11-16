@@ -6,7 +6,7 @@ import {
   Navigate,
   useLocation,
 } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -41,7 +41,7 @@ import SubmitCommission from "./pages/SubmitCommission";
 import UserProfile from "./pages/UserProfile";
 import BidderDash from "./pages/Bidder/BidderDash";
 import MyBids from "./pages/Bidder/MyBids";
-import WonBits from "./pages/Bidder/WonBits";
+import WonBids from "./pages/Bidder/WonBids";
 
 // --- AppContent handles route-based layout ---
 const AppContent = () => {
@@ -49,7 +49,7 @@ const AppContent = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   // ✅ Hide sidebar + header only when path is "/"
-  const hideLayout = location.pathname === "/";
+  const hideLayout = location.pathname === "/" || location.pathname === "/login" || location.pathname === "/sign-up";
 
   const handleToggleSidebar = (collapsed) => {
     setSidebarCollapsed(collapsed);
@@ -103,8 +103,16 @@ const AppContent = () => {
             <Route
               path="/dashboard"
               element={
-                <ProtectedRoute allowedRoles={["Super Admin" , "Bidder"]}>
+                <ProtectedRoute allowedRoles={["Super Admin" ]}>
                   <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/bidderdashboard"
+              element={
+                <ProtectedRoute allowedRoles={["Bidder"]}>
+                  <BidderDash />
                 </ProtectedRoute>
               }
             />
@@ -146,6 +154,24 @@ const AppContent = () => {
             />
 
             <Route
+              path="/my-bids"
+              element={
+                <ProtectedRoute allowedRoles={["Bidder"]}>
+                  <MyBids />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/won-bids"
+              element={
+                <ProtectedRoute allowedRoles={["Bidder"]}>
+                  <WonBids />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
               path="/me"
               element={
                 <ProtectedRoute
@@ -168,12 +194,27 @@ const AppContent = () => {
 // --- Root App Component ---
 const App = () => {
   const dispatch = useDispatch();
+  const { loading } = useSelector((state) => state.user);
 
   useEffect(() => {
     dispatch(fetchUser());
     dispatch(getAllAuctionItems());
     dispatch(fetchLeaderboard());
   }, [dispatch]);
+
+  // Show loading screen while fetching user data
+  if (loading) {
+    return (
+      <ThemeProvider>
+        <div className="w-full h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-orange-200 border-t-orange-500 mx-auto mb-4"></div>
+            <p className="text-gray-600 font-semibold text-lg">Loading BidBazaar...</p>
+          </div>
+        </div>
+      </ThemeProvider>
+    );
+  }
 
   return (
     <ThemeProvider>

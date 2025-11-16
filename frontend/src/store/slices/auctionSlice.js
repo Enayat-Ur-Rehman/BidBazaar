@@ -11,6 +11,8 @@ const auctionSlice = createSlice({
     auctionBidders: {},
     myAuctions: [],
     allAuctions: [],
+    unpaidCommission: 0,
+    commissionStatus: null,
   },
   reducers: {
     createAuctionRequest(state, action) {
@@ -75,7 +77,19 @@ const auctionSlice = createSlice({
     republishItemFailed(state, action) {
       state.loading = false;
     },
-
+    getUnpaidCommissionRequest(state, action) {
+      state.loading = true;
+    },
+    getUnpaidCommissionSuccess(state, action) {
+      state.loading = false;
+      state.unpaidCommission = action.payload.unpaidCommission || 0;
+      state.commissionStatus = action.payload.status;
+    },
+    getUnpaidCommissionFailed(state, action) {
+      state.loading = false;
+      state.unpaidCommission = 0;
+      state.commissionStatus = null;
+    },
     resetSlice(state, action) {
       state.loading = false;
       state.auctionDetail = state.auctionDetail;
@@ -136,6 +150,22 @@ export const getAuctionDetail = (id) => async (dispatch) => {
   }
 };
 
+export const getUnpaidCommission = () => async (dispatch) => {
+  dispatch(auctionSlice.actions.getUnpaidCommissionRequest());
+  try {
+    const response = await axios.get(
+      "http://localhost:5000/api/v1/user/unpaid-commission",
+      { withCredentials: true }
+    );
+    dispatch(
+      auctionSlice.actions.getUnpaidCommissionSuccess(response.data)
+    );
+  } catch (error) {
+    dispatch(auctionSlice.actions.getUnpaidCommissionFailed());
+    console.error(error);
+  }
+};
+
 export const createAuction = (data) => async (dispatch) => {
   dispatch(auctionSlice.actions.createAuctionRequest());
   try {
@@ -150,10 +180,12 @@ export const createAuction = (data) => async (dispatch) => {
     dispatch(auctionSlice.actions.createAuctionSuccess());
     toast.success(response.data.message);
     dispatch(getAllAuctionItems());
+    dispatch(getUnpaidCommission()); // Refresh commission status
     dispatch(auctionSlice.actions.resetSlice());
   } catch (error) {
     dispatch(auctionSlice.actions.createAuctionFailed());
-    toast.error(error.response.data.message);
+    const errorMessage = error.response?.data?.message || "Failed to create auction";
+    toast.error(errorMessage);
     dispatch(auctionSlice.actions.resetSlice());
   }
 };
@@ -173,6 +205,7 @@ export const republishAuction = (id, data) => async (dispatch) => {
     toast.success(response.data.message);
     dispatch(getMyAuctionItems());
     dispatch(getAllAuctionItems());
+    dispatch(getUnpaidCommission()); // Refresh commission status
     dispatch(auctionSlice.actions.resetSlice());
   } catch (error) {
     dispatch(auctionSlice.actions.republishItemFailed());
@@ -195,6 +228,7 @@ export const deleteAuction = (id) => async (dispatch) => {
     toast.success(response.data.message);
     dispatch(getMyAuctionItems());
     dispatch(getAllAuctionItems());
+    dispatch(getUnpaidCommission()); // Refresh commission status
     dispatch(auctionSlice.actions.resetSlice());
   } catch (error) {
     dispatch(auctionSlice.actions.deleteAuctionItemFailed());

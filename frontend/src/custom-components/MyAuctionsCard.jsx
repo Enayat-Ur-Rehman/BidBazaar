@@ -88,11 +88,12 @@ const CardTwo = ({ imgSrc, title, startingBid, startTime, endTime, id }) => {
     <>
       <div className="basis-full sm:basis-56 lg:basis-60 2xl:basis-80 bg-white rounded-xl shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-200 hover:border-orange-300 group flex flex-col">
         {/* Image Container */}
-        <div className="relative h-64 overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
+        <div className="relative h-63 overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
           <img
             src={imgSrc}
             alt={title}
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+            className="w-full
+             h-full object-cover group-hover:scale-110 transition-transform duration-700"
           />
           {getStatusBadge()}
           

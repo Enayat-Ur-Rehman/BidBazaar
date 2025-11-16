@@ -45,12 +45,11 @@ const sidebarRoutes = {
   ],
   
   // Bidder specific routes 
-  bidder: [
-    { href: '/bidder', label: 'Dashboard', icon: LayoutDashboard },
-    { href: '/bidder/my-bids', label: 'My Bids', icon: FileText },
-    { href: '/bidder/won-items', label: 'Won Items', icon: Package },
-  ],
-
+bidder: [
+  { href: '/bidderdashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/my-bids', label: 'My Bids', icon: FileText },
+  { href: '/won-bids', label: 'Won Items', icon: Package },
+],
   // Secondary navigation (always visible)
   secondary: [
     { 

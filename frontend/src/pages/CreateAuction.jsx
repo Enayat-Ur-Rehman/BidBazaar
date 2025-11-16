@@ -1,9 +1,10 @@
-import { createAuction } from "@/store/slices/auctionSlice";
+import { createAuction, getUnpaidCommission } from "@/store/slices/auctionSlice";
 import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import "react-datepicker/dist/react-datepicker.css";
+import { AlertCircle } from "lucide-react";
 
 const CreateAuction = () => {
   const [image, setImage] = useState("");
@@ -40,10 +41,27 @@ const CreateAuction = () => {
   };
 
   const dispatch = useDispatch();
-  const { loading } = useSelector((state) => state.auction);
+  const { loading, unpaidCommission, commissionStatus } = useSelector((state) => state.auction);
+  const { isAuthenticated, user } = useSelector((state) => state.user);
+  const navigateTo = useNavigate();
+
+  useEffect(() => {
+    if (!isAuthenticated || user.role !== "Auctioneer") {
+      navigateTo("/");
+      return;
+    }
+    // Fetch unpaid commission on component mount
+    dispatch(getUnpaidCommission());
+  }, [isAuthenticated, user.role, dispatch, navigateTo]);
 
   const handleCreateAuction = (e) => {
     e.preventDefault();
+    
+    // Check if there's unpaid or pending commission
+    if (unpaidCommission > 0 && commissionStatus !== "settled") {
+      return; // Error will be shown by backend
+    }
+
     const formData = new FormData();
     formData.append("image", image);
     formData.append("title", title);
@@ -56,13 +74,7 @@ const CreateAuction = () => {
     dispatch(createAuction(formData));
   };
 
-  const { isAuthenticated, user } = useSelector((state) => state.user);
-  const navigateTo = useNavigate();
-  useEffect(() => {
-    if (!isAuthenticated || user.role !== "Auctioneer") {
-      navigateTo("/");
-    }
-  }, [isAuthenticated]);
+  const hasUnpaidCommission = unpaidCommission > 0 && commissionStatus !== "settled";
 
   return (
     <article className="w-full px-5 lg:px-8 py-8 flex flex-col justify-center items-center">
@@ -72,6 +84,21 @@ const CreateAuction = () => {
         Create Auction
       </h1>
       <div className="bg-white mx-auto w-full h-auto px-2 flex flex-col gap-4 items-center py-4 justify-center rounded-md">
+        {/* Commission Warning */}
+        {hasUnpaidCommission && (
+          <div className="w-full bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3 mb-6">
+            <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-red-800 font-semibold mb-1">Unpaid Commission</p>
+              <p className="text-red-700 text-sm">
+                You have an unpaid commission of <span className="font-bold">${unpaidCommission.toLocaleString()}</span>. 
+                Please settle it before creating a new auction.
+              </p>
+              <p className="text-red-600 text-xs mt-2">Status: <span className="uppercase font-semibold">{commissionStatus}</span></p>
+            </div>
+          </div>
+        )}
+
         <form
           className="flex flex-col gap-5 w-full"
           onSubmit={handleCreateAuction}
@@ -173,18 +200,18 @@ const CreateAuction = () => {
             <label className="font-semibold text-xl md:text-2xl">
               Auction Item Image
             </label>
-            <div class="flex items-center justify-center w-full">
+            <div className="flex items-center justify-center w-full">
               <label
-                for="dropzone-file"
-                class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                htmlFor="dropzone-file"
+                className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
               >
-                <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                <div className="flex flex-col items-center justify-center pt-5 pb-6">
                   {imagePreview ? (
                     <img src={imagePreview} alt={title} className="w-44 h-auto"/>
                   ) : (
                     <>
                       <svg
-                        class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
+                        className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
                         aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -192,28 +219,38 @@ const CreateAuction = () => {
                       >
                         <path
                           stroke="currentColor"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
                           d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
                         />
                       </svg>
                     </>
                   )}
 
-                  <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                    <span class="font-semibold">Click to upload</span> or drag
+                  <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                    <span className="font-semibold">Click to upload</span> or drag
                     and drop
                   </p>
-                  <p class="text-xs text-gray-500 dark:text-gray-400">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
                     SVG, PNG, JPG or GIF (MAX. 800x400px)
                   </p>
                 </div>
-                <input id="dropzone-file" type="file" class="hidden" onChange={imageHandler}/>
+                <input id="dropzone-file" type="file" className="hidden" onChange={imageHandler}/>
               </label>
             </div>
           </div>
-          <button className="bg-[#D6482B] font-semibold hover:bg-[#b8381e] text-xl transition-all duration-300 py-2 px-4 rounded-md text-white w-[280px] mx-auto lg:w-[640px] my-4">{loading ? "Creating Auction..." : "Create Auction"}</button>
+          <button 
+            type="submit"
+            disabled={hasUnpaidCommission || loading}
+            className={`font-semibold text-xl transition-all duration-300 py-2 px-4 rounded-md text-white w-[280px] mx-auto lg:w-[640px] my-4 ${
+              hasUnpaidCommission || loading
+                ? "bg-gray-400 cursor-not-allowed opacity-50"
+                : "bg-[#D6482B] hover:bg-[#b8381e]"
+            }`}
+          >
+            {loading ? "Creating Auction..." : "Create Auction"}
+          </button>
         </form>
       </div>
     </article>

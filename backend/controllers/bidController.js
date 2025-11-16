@@ -69,3 +69,103 @@ export const placeBid = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler(error.message || "Failed to place bid.", 500));
   }
 });
+
+export const getMyBids = catchAsyncErrors(async (req, res, next) => {
+  try {
+    const bids = await Bid.find({ "bidder.id": req.user._id })
+      .populate("auctionItem")
+      .sort({ createdAt: -1 });
+
+    const myBids = bids
+      .filter((bid) => bid.auctionItem) // Filter out deleted auctions
+      .map((bid) => {
+        try {
+          return {
+            _id: bid._id,
+            bidAmount: bid.amount,
+            auctionTitle: bid.auctionItem?.title || "Unknown",
+            auctionImage: bid.auctionItem?.image?.url
+              ? { url: bid.auctionItem.image.url }
+              : null,
+            auctionStartTime: bid.auctionItem?.startTime,
+            auctionEndTime: bid.auctionItem?.endTime,
+            highestBid: bid.auctionItem?.currentBid || 0,
+            isWinning: bid.amount === bid.auctionItem?.currentBid,
+            auctioneerName: bid.auctionItem?.createdBy?.userName || "Unknown",
+            itemCount: 1,
+          };
+        } catch (mapError) {
+          console.error("Error mapping bid:", mapError);
+          return null;
+        }
+      })
+      .filter((bid) => bid !== null); // Remove any failed mappings
+
+    res.status(200).json({
+      success: true,
+      bids: myBids,
+    });
+  } catch (error) {
+    console.error("getMyBids error:", error);
+    return next(new ErrorHandler(error.message || "Failed to fetch bids", 500));
+  }
+});
+
+export const getWonBids = catchAsyncErrors(async (req, res, next) => {
+  try {
+    const bids = await Bid.find({ "bidder.id": req.user._id })
+      .populate("auctionItem")
+      .sort({ createdAt: -1 });
+
+    console.log("Total bids found:", bids.length);
+
+    const wonBids = bids
+      .filter((bid) => {
+        if (!bid.auctionItem) {
+          console.log("Bid has no auctionItem:", bid._id);
+          return false;
+        }
+
+        const now = new Date();
+        const endTime = new Date(bid.auctionItem.endTime);
+        const isEnded = now > endTime;
+        const isWinning = bid.amount === bid.auctionItem.currentBid;
+
+        console.log(`Bid ${bid._id}: ended=${isEnded}, winning=${isWinning}`);
+
+        return isEnded && isWinning;
+      })
+      .map((bid) => {
+        try {
+          return {
+            _id: bid._id,
+            bidAmount: bid.amount,
+            auctionTitle: bid.auctionItem?.title || "Unknown",
+            auctionImage: bid.auctionItem?.image?.url
+              ? { url: bid.auctionItem.image.url }
+              : null,
+            auctionStartTime: bid.auctionItem?.startTime,
+            auctionEndTime: bid.auctionItem?.endTime,
+            highestBid: bid.auctionItem?.currentBid || 0,
+            isWinning: true,
+            auctioneerName: bid.auctionItem?.createdBy?.userName || "Unknown",
+            itemCount: 1,
+          };
+        } catch (mapError) {
+          console.error("Error mapping won bid:", mapError);
+          return null;
+        }
+      })
+      .filter((bid) => bid !== null);
+
+    console.log("Won bids count:", wonBids.length);
+
+    res.status(200).json({
+      success: true,
+      bids: wonBids,
+    });
+  } catch (error) {
+    console.error("getWonBids error:", error);
+    return next(new ErrorHandler(error.message || "Failed to fetch won bids", 500));
+  }
+});
