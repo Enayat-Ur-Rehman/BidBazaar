@@ -50,6 +50,32 @@ const auctionSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  paymentInitiated:{
+    type:Boolean,
+    default: false,
+  },
+  currentPaymentBidderId:{
+    type:mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
+  paymentHistory:[
+    {
+      bidderId: mongoose.Schema.Types.ObjectId,
+      status: String,
+      expiresAt: Date,
+      paidAt: Date,
+      bidderSequenceOrder: Number,
+    },
+  ],
+  finalWinner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
+  auctionState:{
+    type:String,
+    enum: ["Active","Waiting_Payment","Completed","Cancelled"],
+  },
+  
 });
 
 export const Auction = mongoose.model("Auction", auctionSchema);
