@@ -97,19 +97,7 @@ const Contact = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-md mb-6">
-            <MessageSquare className="w-5 h-5 text-blue-600" />
-            <span className="text-sm font-semibold text-gray-700">We're here to help</span>
-          </div>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
-            Get In Touch
-          </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
-          </p>
-        </div>
+      
 
         {/* Contact Info Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
