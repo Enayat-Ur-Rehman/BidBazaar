@@ -117,7 +117,7 @@ const AppContent = () => {
               path="/bidderdashboard"
               element={
                 <ProtectedRoute allowedRoles={["Bidder"]}>
-                  <BidderDash />
+                  <BidderDashboard />
                 </ProtectedRoute>
               }
             />

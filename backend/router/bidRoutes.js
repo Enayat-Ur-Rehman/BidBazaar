@@ -2,8 +2,6 @@ import express from "express";
 import { getMyBids, placeBid } from "../controllers/bidController.js";
 import { isAuthenticated, isAuthorized } from "../middlewares/auth.js";
 import { checkAuctionEndTime } from "../middlewares/checkAuctionEndTime.js";
-import { getMyBids } from "../controllers/bidController.js";
-import { getWonBids } from "../controllers/bidController.js";
 
 
 
