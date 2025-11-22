@@ -9,11 +9,13 @@ const bidSlice = createSlice({
     loading: false,myBids:[],myBidsLoading:false, myBidsError: null,
   },
   reducers: {
-    bidRequest(state, action) {
+    bidRequest(state) {
       state.loading = true;
+      state.error = null;
     },
-    bidSuccess(state, action) {
+    bidSuccess(state) {
       state.loading = false;
+      state.error = null;
     },
     bidFailed(state, action) {
       state.loading = false;
@@ -42,10 +44,14 @@ const bidSlice = createSlice({
 export const placeBid = (id, data) => async (dispatch) => {
   dispatch(bidSlice.actions.bidRequest());
   try {
-    const response = await axios.post(`http://localhost:5000/api/v1/bid/place/${id}`, data, {
-      withCredentials: true,
-      headers: { "Content-Type": "application/json" },
-    });
+    const response = await axios.post(
+      `http://localhost:5000/api/v1/bid/place/${id}`,
+      data,
+      {
+        withCredentials: true,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
     dispatch(bidSlice.actions.bidSuccess());
     toast.success(response.data.message);
     dispatch(getAuctionDetail(id));

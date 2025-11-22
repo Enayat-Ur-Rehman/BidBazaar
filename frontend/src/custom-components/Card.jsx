@@ -180,7 +180,7 @@ const Card = ({ imgSrc, title, startingBid, startTime, endTime, id }) => {
       className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border border-stone-200 hover:border-[#D6482B] hover:-translate-y-2 flex flex-col"
     >
       {/* Image Container */}
-      <div className="relative h-64 overflow-hidden bg-gradient-to-br from-stone-100 to-stone-200">
+      <div className="relative h-62 overflow-hidden bg-gradient-to-br from-stone-100 to-stone-200">
         <img
           src={imgSrc}
           alt={title}
