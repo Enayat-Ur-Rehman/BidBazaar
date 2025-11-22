@@ -1,10 +1,17 @@
 
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector,useDispatch } from "react-redux";
+import { getAllAuctionItems } from "@/store/slices/auctionSlice";
 import { Link, useLocation } from "react-router-dom";
-import { ArrowRight, Gavel, TrendingUp, Award, Shield, Zap, Users, Target,Menu, X  } from "lucide-react";
-
-
+import { ArrowRight, Gavel, TrendingUp, Award, Shield, Zap, Users, Target,Menu, X  ,Clock, Heart,} from "lucide-react";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Autoplay, Pagination } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import HeroBackground from "../assets/HeroBackground.png"  
+import HeroBackground2 from "../assets/HeroBg2.png"  
+import HeroBackground3 from "../assets/HeroBg3.png"  
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
@@ -127,14 +134,16 @@ const HeroSection = ({ isAuthenticated }) => {
   }, []);
 
   return (
-    <section className="mt-4 relative min-h-[80vh] flex items-center justify-center overflow-hidden px-5 py-20">
+    <section className="mt-4 relative min-h-[100vh] flex items-center justify-center overflow-hidden px-5 py-20">
       {/* Animated Background */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 opacity-30">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-[#D6482B]/20 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-[#ff6b4a]/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        </div>
+        <img 
+          src={HeroBackground3} 
+          alt="Hero Background" 
+          className="w-full h-full object-cover opacity-50"
+        />
       </div>
+
 
       <div className={`relative z-10 max-w-6xl mx-auto text-center transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
         <p className="text-[#D6482B] font-semibold text-lg md:text-xl mb-6 tracking-wide uppercase animate-fade-in">
@@ -149,8 +158,8 @@ const HeroSection = ({ isAuthenticated }) => {
           Be The Winner
         </h1>
 
-        <p className="text-lg md:text-xl text-stone-600 mb-12 max-w-3xl mx-auto animate-fade-in delay-400">
-          Join the most transparent and exciting online auction platform. Bid smart, win big, and experience the future of online auctions.
+        <p className="text-lg md:text-xl mb-12 max-w-3xl mx-auto animate-fade-in delay-400 font-semibold">
+          "Join the most transparent and exciting online auction platform. Bid smart, win big, and experience the future of online auctions"
         </p>
 
         {!isAuthenticated && (
@@ -171,22 +180,16 @@ const HeroSection = ({ isAuthenticated }) => {
             </Link>
           </div>
         )}
+        <style jsx>{`
+          .text-outline {
+            color:black;
+            -webkit-text-stroke: 1px white;
+          }`}
+        </style>
 
-        {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 animate-fade-in delay-800">
-          {[
-            { label: "Active Auctions", value: "500+" },
-            { label: "Happy Users", value: "10K+" },
-            { label: "Items Sold", value: "50K+" },
-            { label: "Success Rate", value: "98%" }
-          ].map((stat, index) => (
-            <div key={index} className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-              <p className="text-3xl md:text-4xl font-bold text-[#D6482B] mb-2">{stat.value}</p>
-              <p className="text-sm text-stone-600 font-medium">{stat.label}</p>
-            </div>
-          ))}
-        </div>
+      
       </div>
+     
     </section>
   );
 };
@@ -265,97 +268,289 @@ const HowItWorksSection = () => {
   );
 };
 
+
 const FeaturedAuctionsSection = () => {
-  const auctions = [
-    {
-      id: 1,
-      title: "Vintage Camera Collection",
-      currentBid: "$2,500",
-      image: "🎥",
-      timeLeft: "2h 45m",
-      bids: 23
-    },
-    {
-      id: 2,
-      title: "Rare Comic Books Set",
-      currentBid: "$1,800",
-      image: "📚",
-      timeLeft: "5h 20m",
-      bids: 15
-    },
-    {
-      id: 3,
-      title: "Antique Pocket Watch",
-      currentBid: "$3,200",
-      image: "⌚",
-      timeLeft: "1h 15m",
-      bids: 31
-    },
-  ];
+  const dispatch = useDispatch();
+  const { allAuctions, loading } = useSelector((state) => state.auction);
+
+  useEffect(() => {
+    dispatch(getAllAuctionItems());
+  }, [dispatch]);
+
+  // Helper function to calculate time left
+  const calculateTimeLeft = (endTime) => {
+    const now = new Date();
+    const end = new Date(endTime);
+    const difference = end - now;
+
+    if (difference <= 0) return 'Ended';
+
+    const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((difference / 1000 / 60) % 60);
+
+    if (days > 0) return `${days}d ${hours}h`;
+    if (hours > 0) return `${hours}h ${minutes}m`;
+    return `${minutes}m`;
+  };
+
+  // Check if auction is ending soon (within 24 hours)
+  const isEndingSoon = (endTime) => {
+    const now = new Date();
+    const end = new Date(endTime);
+    const difference = end - now;
+    return difference > 0 && difference <= 24 * 60 * 60 * 1000;
+  };
+
+  // Filter live auctions
+  const liveAuctions = allAuctions.filter((auction) => {
+    const now = new Date();
+    const endTime = new Date(auction.endTime);
+    const startTime = new Date(auction.startTime);
+    return startTime <= now && endTime > now && auction.auctionState === 'Active';
+  });
+
+  // Determine which auctions to show
+  const displayAuctions =
+    liveAuctions.length > 0
+      ? [...liveAuctions]
+          .sort((a, b) => {
+            const timeA = new Date(a.endTime).getTime();
+            const timeB = new Date(b.endTime).getTime();
+            return timeA - timeB || b.bids.length - a.bids.length;
+          })
+          .slice(0, 9)
+      : [...allAuctions]
+          .filter((auction) => auction.auctionState !== 'Completed')
+          .sort((a, b) => new Date(a.startTime) - new Date(b.startTime))
+          .slice(0, 9);
+
+  if (loading) {
+    return (
+      <section className="py-20 px-5">
+        <div className="max-w-7xl mx-auto text-center">
+          <div className="animate-pulse">
+            <h2 className="text-4xl font-bold text-gray-300 mb-4">
+              Loading Auctions...
+            </h2>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (displayAuctions.length === 0) {
+    return (
+      <section className="py-20 px-5 bg-gradient-to-b from-stone-50 to-white">
+        <div className="max-w-7xl mx-auto text-center">
+          <h2 className="text-4xl md:text-5xl font-bold text-[#111] mb-4">
+            Featured{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D6482B] to-[#ff6b4a]">
+              Auctions
+            </span>
+          </h2>
+          <p className="text-xl text-stone-600">
+            No auctions available right now. Check back soon!
+          </p>
+        </div>
+      </section>
+    );
+  }
 
   return (
-    <section className="py-20 px-5">
+    <section className="py-20 px-5 bg-gradient-to-b from-stone-50 to-white">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-[#111] mb-4">
-            Featured <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D6482B] to-[#ff6b4a]">Auctions</span>
+            {liveAuctions.length > 0 ? 'Live' : 'Featured'}{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D6482B] to-[#ff6b4a]">
+              Auctions
+            </span>
           </h2>
           <p className="text-lg text-stone-600 max-w-2xl mx-auto">
-            Discover exceptional items from our curated selection of live auctions.
+            {liveAuctions.length > 0
+              ? 'Bid now on rare collectibles, luxury items, and tech — all verified and ending soon.'
+              : 'Discover upcoming and active auctions featuring premium items.'}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {auctions.map((auction) => (
-            <div
-              key={auction.id}
-              className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
-            >
-              <div className="h-48 bg-gradient-to-br from-[#D6482B]/10 to-[#ff6b4a]/10 flex items-center justify-center text-6xl group-hover:scale-110 transition-transform duration-300">
-                {auction.image}
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-[#111] mb-3 group-hover:text-[#D6482B] transition-colors">
-                  {auction.title}
-                </h3>
-                <div className="flex justify-between items-center mb-4">
-                  <div>
-                    <p className="text-sm text-stone-500">Current Bid</p>
-                    <p className="text-2xl font-bold text-[#D6482B]">{auction.currentBid}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm text-stone-500">Time Left</p>
-                    <p className="text-lg font-semibold text-[#111]">{auction.timeLeft}</p>
-                  </div>
-                </div>
-                <div className="flex justify-between items-center pt-4 border-t border-stone-100">
-                  <p className="text-sm text-stone-500">{auction.bids} bids</p>
-                  <Link
-                    to={`/auction/item/${auction.id}`}
-                    className="text-[#D6482B] font-semibold hover:underline flex items-center gap-1"
-                  >
-                    Place Bid
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+        {/* Swiper Carousel */}
+        <Swiper
+          modules={[Navigation, Autoplay, Pagination]}
+          spaceBetween={30}
+          slidesPerView={1}
+          breakpoints={{
+            640: { slidesPerView: 1 },
+            768: { slidesPerView: 2 },
+            1024: { slidesPerView: 3 },
+          }}
+          navigation
+          autoplay={{ delay: 2000, disableOnInteraction: false }}
+          loop={displayAuctions.length > 3}
+          pagination={{ clickable: true }}
+          className="featured-auctions-swiper pb-12"
+        >
+          {displayAuctions.map((auction) => {
+            const timeLeft = calculateTimeLeft(auction.endTime);
+            const endingSoon = isEndingSoon(auction.endTime);
+            const hasStarted = new Date(auction.startTime) <= new Date();
 
-        <div className="text-center mt-12">
+            return (
+              <SwiperSlide key={auction._id}>
+                <div className="group relative bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border border-stone-100">
+                  {/* Image Container */}
+                  <div className="relative overflow-hidden">
+                    <div className="aspect-w-4 aspect-h-3 w-full h-64 bg-stone-100">
+                      <img
+                        src={auction.image.url}
+                        alt={auction.title}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                      />
+                    </div>
+
+                    {/* Badges */}
+                    <div className="absolute top-4 left-4 flex flex-col gap-2">
+                      {!hasStarted && (
+                        <span className="px-3 py-1 bg-blue-600 text-white text-xs font-bold rounded-full">
+                          Upcoming
+                        </span>
+                      )}
+                      {hasStarted && endingSoon && (
+                        <span className="px-3 py-1 bg-red-600 text-white text-xs font-bold rounded-full animate-pulse">
+                          Ending Soon
+                        </span>
+                      )}
+                      {auction.condition === 'New' && (
+                        <span className="px-3 py-1 bg-emerald-600 text-white text-xs font-bold rounded-full flex items-center gap-1">
+                          <Shield className="w-3 h-3" /> New
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Favorite Button */}
+                    <button className="absolute top-4 right-4 p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-red-50 transition-colors">
+                      <Heart className="w-5 h-5 text-stone-600 hover:text-red-500 hover:fill-red-500 transition-all" />
+                    </button>
+                  </div>
+
+                  {/* Content */}
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold text-[#111] mb-2 line-clamp-2 group-hover:text-[#D6482B] transition-colors">
+                      {auction.title}
+                    </h3>
+
+                    <p className="text-sm text-stone-500 mb-4 line-clamp-1">
+                      {auction.category}
+                    </p>
+
+                    <div className="flex items-center justify-between mb-4">
+                      <div>
+                        <p className="text-sm text-stone-500">
+                          {auction.currentBid > 0
+                            ? 'Current Bid'
+                            : 'Starting Bid'}
+                        </p>
+                        <p className="text-3xl font-bold text-[#D6482B]">
+                          Rs
+                          {(auction.currentBid > 0
+                            ? auction.currentBid
+                            : auction.startingBid
+                          ).toLocaleString()}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm text-stone-500 flex items-center gap-1 justify-end">
+                          <Clock className="w-4 h-4" />
+                          {hasStarted ? 'Time Left' : 'Starts In'}
+                        </p>
+                        <p className="text-lg font-bold text-[#111]">
+                          {hasStarted
+                            ? timeLeft
+                            : calculateTimeLeft(auction.startTime)}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between pt-4 border-t border-stone-200">
+                      <div className="flex items-center gap-2 text-sm text-stone-500">
+                        <TrendingUp className="w-4 h-4 text-emerald-600" />
+                        <span>{auction.bids.length} bids</span>
+                      </div>
+                      <Link
+                        to={`/auction/${auction._id}`}
+                        className="flex items-center gap-2 text-[#D6482B] font-bold hover:gap-3 transition-all"
+                      >
+                        {hasStarted ? 'Bid Now' : 'View Details'}
+                        <ArrowRight className="w-5 h-5" />
+                      </Link>
+                    </div>
+                  </div>
+
+                  {/* Hover glow effect */}
+                  <div className="absolute inset-0 ring-4 ring-transparent group-hover:ring-[#D6482B]/20 rounded-2xl transition-all duration-500 pointer-events-none"></div>
+                </div>
+              </SwiperSlide>
+            );
+          })}
+        </Swiper>
+
+        {/* View All Button */}
+        <div className="text-center mt-16">
           <Link
             to="/auctions"
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-[#D6482B] to-[#b8381e] text-white font-semibold px-8 py-4 rounded-xl hover:shadow-2xl hover:shadow-[#D6482B]/50 transition-all duration-300 hover:scale-105"
+            className="inline-flex items-center gap-3 bg-gradient-to-r from-[#D6482B] to-[#b8381e] text-white font-bold px-10 py-4 rounded-xl hover:shadow-2xl hover:shadow-[#D6482B]/40 transition-all duration-300 hover:scale-105 text-lg"
           >
-            View All Auctions
-            <ArrowRight className="w-5 h-5" />
+            Explore All Auctions
+            <ArrowRight className="w-6 h-6" />
           </Link>
         </div>
       </div>
+
+      {/* Custom Swiper Styles */}
+      <style jsx>{`
+        .featured-auctions-swiper .swiper-pagination-bullet {
+          background: #cbd5e1;
+          opacity: 1;
+          width: 10px;
+          height: 10px;
+        }
+        .featured-auctions-swiper .swiper-pagination-bullet-active {
+          background: #d6482b;
+          width: 24px;
+          border-radius: 5px;
+        }
+        .featured-auctions-swiper .swiper-button-next,
+        .featured-auctions-swiper .swiper-button-prev {
+          color: #d6482b;
+          background: white;
+          width: 48px;
+          height: 48px;
+          border-radius: 50%;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+          transition: all 0.3s;
+        }
+        .featured-auctions-swiper .swiper-button-next:hover,
+        .featured-auctions-swiper .swiper-button-prev:hover {
+          background: #d6482b;
+          color: white;
+          transform: scale(1.1);
+          box-shadow: 0 8px 30px rgba(214, 72, 43, 0.3);
+        }
+        .featured-auctions-swiper .swiper-button-next:after,
+        .featured-auctions-swiper .swiper-button-prev:after {
+          font-size: 18px;
+          font-weight: bold;
+        }
+        .featured-auctions-swiper .swiper-button-disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+      `}</style>
     </section>
   );
 };
+
+
 
 const WhyChooseUsSection = () => {
   const features = [

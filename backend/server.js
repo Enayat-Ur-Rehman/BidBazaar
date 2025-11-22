@@ -30,25 +30,25 @@ app.listen(process.env.PORT, () => {
 // });
 
 // if (result.error) {
-//   console.error("❌ Error loading .env file:", result.error.message);
+//   console.error("Error loading .env file:", result.error.message);
 //   process.exit(1);
 // }
 
-// console.log("✅ .env file loaded successfully");
+// console.log(".env file loaded successfully");
 
 // // Debug environment variables
-// console.log("\n📋 Environment Variables Check:");
-// console.log("STRIPE_SECRET_KEY:", process.env.STRIPE_SECRET_KEY ? "✅ Loaded" : "❌ Missing");
-// console.log("STRIPE_PUBLIC_KEY:", process.env.STRIPE_PUBLIC_KEY ? "✅ Loaded" : "❌ Missing");
-// console.log("MONGO_URI:", process.env.MONGO_URI ? "✅ Loaded" : "❌ Missing");
-// console.log("PORT:", process.env.PORT ? "✅ Loaded" : "❌ Missing");
+// console.log("\n Environment Variables Check:");
+// console.log("STRIPE_SECRET_KEY:", process.env.STRIPE_SECRET_KEY ? " Loaded" : " Missing");
+// console.log("STRIPE_PUBLIC_KEY:", process.env.STRIPE_PUBLIC_KEY ? " Loaded" : " Missing");
+// console.log("MONGO_URI:", process.env.MONGO_URI ? " Loaded" : " Missing");
+// console.log("PORT:", process.env.PORT ? " Loaded" : "Missing");
 
 // if (!process.env.STRIPE_SECRET_KEY) {
-//   console.error("\n❌ CRITICAL: STRIPE_SECRET_KEY is missing from config/config.env!");
+//   console.error("\nCRITICAL: STRIPE_SECRET_KEY is missing from config/config.env!");
 //   process.exit(1);
 // }
 
-// console.log("\n✅ All critical variables loaded\n");
+// console.log("\n All critical variables loaded\n");
 
 // // NOW import app AFTER .env is loaded
 // import app from "./app.js";
@@ -62,12 +62,12 @@ app.listen(process.env.PORT, () => {
 //   api_secret: process.env.CLOUDINARY_API_SECRET,
 // });
 
-// console.log("🎨 Cloudinary configured");
+// console.log(" Cloudinary configured");
 
 // await connection();
 // // Start server
 // const PORT = process.env.PORT || 5000;
 // app.listen(PORT, () => {
-//   console.log(`✅ Server listening on http://localhost:${PORT}`);
+//   console.log(` Server listening on http://localhost:${PORT}`);
 // });
 
