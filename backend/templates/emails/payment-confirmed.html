@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Confirmed - BidBazaar</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f3f4f6;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            padding: 50px 30px;
+            text-align: center;
+            color: white;
+        }
+        .header .icon {
+            font-size: 64px;
+            margin-bottom: 15px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 32px;
+            font-weight: 700;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.95;
+            font-size: 18px;
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .success-box {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border: 2px solid #10b981;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            margin: 25px 0;
+        }
+        .success-box h2 {
+            margin: 0 0 10px 0;
+            color: #065f46;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        .success-box p {
+            margin: 0;
+            color: #047857;
+            font-size: 16px;
+        }
+        .winner-banner {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #78350f;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin: 25px 0;
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .payment-summary {
+            background-color: #f9fafb;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 4px solid #10b981;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        .label {
+            font-weight: 600;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .value {
+            font-size: 16px;
+            color: #111827;
+            font-weight: 600;
+        }
+        .highlight {
+            color: #10b981;
+            font-size: 18px;
+        }
+        .remaining-payment {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+        .remaining-payment h3 {
+            margin: 0 0 15px 0;
+            color: #92400e;
+            font-size: 20px;
+        }
+        .next-steps {
+            background-color: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+        .next-steps h3 {
+            margin: 0 0 15px 0;
+            color: #1e40af;
+            font-size: 18px;
+        }
+        .next-steps ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .next-steps li {
+            margin: 10px 0;
+            color: #374151;
+            font-size: 15px;
+        }
+        .contact-box {
+            background-color: #f3f4f6;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+        .contact-box h3 {
+            margin: 0 0 15px 0;
+            color: #111827;
+            font-size: 18px;
+        }
+        .contact-row {
+            margin: 10px 0;
+            color: #374151;
+        }
+        .contact-row strong {
+            color: #111827;
+        }
+        .footer {
+            background-color: #1f2937;
+            color: #9ca3af;
+            text-align: center;
+            padding: 30px;
+            font-size: 14px;
+        }
+        .footer a {
+            color: #10b981;
+            text-decoration: none;
+        }
+        @media (max-width: 600px) {
+            .container {
+                margin: 0;
+                border-radius: 0;
+            }
+            .detail-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="icon">✅</div>
+            <h1>Payment Confirmed!</h1>
+            <p>Your win is now official</p>
+        </div>
+        
+        <div class="content">
+            <p style="font-size: 18px; color: #374151; margin: 20px 0;">
+                Dear <strong>${userName}</strong>,
+            </p>
+
+            <div class="success-box">
+                <h2>🎉 Congratulations!</h2>
+                <p>Your payment has been successfully verified and confirmed</p>
+            </div>
+
+            <div class="winner-banner">
+                🏆 YOU OFFICIALLY WON THE AUCTION! 🏆
+            </div>
+
+            <div class="payment-summary">
+                <h3 style="margin: 0 0 20px 0; color: #111827; font-size: 20px;">Payment Summary</h3>
+                
+                <div class="detail-row">
+                    <span class="label">Item Name</span>
+                    <span class="value">${auctionTitle}</span>
+                </div>
+                
+                <div class="detail-row">
+                    <span class="label">Winning Bid</span>
+                    <span class="value">Rs. ${winningBid}</span>
+                </div>
+                
+                <div class="detail-row">
+                    <span class="label">20% Deposit Paid</span>
+                    <span class="value highlight">Rs. ${depositPaid}</span>
+                </div>
+                
+                <div class="detail-row">
+                    <span class="label">Payment Date</span>
+                    <span class="value">${paymentDate}</span>
+                </div>
+            </div>
+
+            <div class="remaining-payment">
+                <h3>💰 Remaining Balance</h3>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 16px; color: #92400e; font-weight: 600;">Amount to Pay (80%)</span>
+                    <span style="font-size: 24px; color: #92400e; font-weight: 700;">Rs. ${remainingAmount}</span>
+                </div>
+                <p style="margin: 10px 0 0 0; font-size: 14px; color: #78350f;">
+                    To be paid directly to the auctioneer upon delivery/pickup
+                </p>
+            </div>
+
+            <div class="next-steps">
+                <h3>📋 Next Steps</h3>
+                <ol>
+                    <li><strong>Contact the Auctioneer:</strong> Reach out to arrange delivery or pickup</li>
+                    <li><strong>Finalize Payment:</strong> Pay the remaining 80% using your preferred method</li>
+                    <li><strong>Receive Your Item:</strong> Get your auction item and enjoy!</li>
+                </ol>
+            </div>
+
+            <div class="contact-box">
+                <h3>📞 Auctioneer Contact Information</h3>
+                <div class="contact-row">
+                    <strong>Email:</strong> <a href="mailto:${auctioneerEmail}" style="color: #3b82f6; text-decoration: none;">${auctioneerEmail}</a>
+                </div>
+                <div class="contact-row">
+                    <strong>Phone:</strong> ${auctioneerPhone}
+                </div>
+            </div>
+
+            <p style="color: #6b7280; font-size: 14px; margin-top: 30px; padding: 15px; background-color: #f9fafb; border-radius: 8px;">
+                <strong>Note:</strong> Please coordinate directly with the auctioneer for item delivery and final payment. BidBazaar is not responsible for the physical exchange of goods.
+            </p>
+
+            <p style="color: #6b7280; text-align: center; margin-top: 30px;">
+                Thank you for choosing BidBazaar! We hope to see you in future auctions.
+            </p>
+        </div>
+        
+        <div class="footer">
+            <p style="margin: 0 0 10px 0; font-weight: 600; color: #d1d5db;">BidBazaar Auction Platform</p>
+            <p style="margin: 0;">© 2025 BidBazaar. All rights reserved.</p>
+            <p style="margin: 10px 0 0 0;">
+                <a href="#">Support</a> | <a href="#">Terms</a> | <a href="#">Privacy</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

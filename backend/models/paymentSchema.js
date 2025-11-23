@@ -19,7 +19,7 @@ const paymentSchema = new mongoose.Schema({
     type: Number, // 20% of bid amount
     required: true,
   },
-  status: {
+  paymentStatus: {
     type: String,
     enum: ["Pending", "Paid", "Failed", "Expired"],
     default: "Pending",
@@ -56,6 +56,6 @@ const paymentSchema = new mongoose.Schema({
 
 paymentSchema.index({ auctionItem: 1, bidder: 1 });
 paymentSchema.index({ expiresAt: 1 });
-paymentSchema.index({ status: 1 });
+paymentSchema.index({ paymentStatus: 1 });
 
 export const Payment = mongoose.model("Payment", paymentSchema);

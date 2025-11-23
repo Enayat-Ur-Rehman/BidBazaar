@@ -9,7 +9,7 @@ export const paymentExpiryCron = () => {
 
     try {
       const expiredPayments = await Payment.find({
-        status: "Pending",
+        paymentStatus: "Pending",
         expiresAt: { $lt: now },
       });
 

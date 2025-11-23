@@ -1,0 +1,50 @@
+<!-- payment-expired.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f3f4f6; }
+        .container { max-width: 600px; margin: 20px auto; background-color: #ffffff; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); border-radius: 8px; overflow: hidden; }
+        .header { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); padding: 40px 30px; text-align: center; color: white; }
+        .header h1 { margin: 0; font-size: 28px; font-weight: 600; }
+        .content { padding: 40px 30px; }
+        .alert-box { background: #fef2f2; border: 2px solid #fca5a5; border-radius: 12px; padding: 25px; text-align: center; margin: 25px 0; }
+        .alert-box h2 { margin: 0 0 10px 0; color: #991b1b; font-size: 22px; }
+        .footer { background-color: #1f2937; color: #9ca3af; text-align: center; padding: 30px; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div style="font-size: 64px; margin-bottom: 15px;">⏰</div>
+            <h1>Payment Deadline Missed</h1>
+        </div>
+        <div class="content">
+            <p style="font-size: 18px; color: #374151;">Dear <strong>${userName}</strong>,</p>
+            <div class="alert-box">
+                <h2>Payment Window Closed</h2>
+                <p style="color: #991b1b; margin: 0;">Unfortunately, the 12-hour payment window has expired</p>
+            </div>
+            <p style="color: #6b7280; line-height: 1.8;">
+                We regret to inform you that you did not complete the required payment within the 12-hour window for the auction <strong>"${auctionTitle}"</strong>.
+            </p>
+            <p style="color: #6b7280; line-height: 1.8;">
+                As per our auction policies, your exclusive offer has been revoked and the auction has been offered to the next highest bidder.
+            </p>
+            <div style="background-color: #eff6ff; padding: 20px; border-radius: 8px; margin: 25px 0;">
+                <p style="margin: 0; color: #1e40af;">
+                    <strong>What this means:</strong> The auction item will be offered to another bidder, and you will not be able to claim this item.
+                </p>
+            </div>
+            <p style="color: #6b7280;">
+                We appreciate your participation and hope to see you in future auctions. Remember to complete payments promptly to secure your wins!
+            </p>
+        </div>
+        <div class="footer">
+            <p>© 2025 BidBazaar. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

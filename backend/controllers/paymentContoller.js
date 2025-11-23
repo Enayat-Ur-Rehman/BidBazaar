@@ -11,7 +11,7 @@ export const getUserPendingPayments = catchAsyncErrors(
 
     const payments = await Payment.find({
       bidder: userId,
-      status: "Pending",
+      paymentStatus: "Pending",
     })
       .populate({
         path: "auctionItem",
@@ -38,12 +38,12 @@ export const createStripePaymentSession = catchAsyncErrors(
       return next(new ErrorHandler("Payment not found", 404));
     }
 
-    if (payment.status !== "Pending") {
+    if (payment.paymentStatus !== "Pending") {
       return next(new ErrorHandler("Payment already processed", 400));
     }
 
     if (new Date() > payment.expiresAt) {
-      await Payment.findByIdAndUpdate(paymentId, { status: "Expired" });
+      await Payment.findByIdAndUpdate(paymentId, { paymentStatus: "Expired" });
       return next(new ErrorHandler("Payment deadline has passed", 400));
     }
 
@@ -86,7 +86,7 @@ export const verifyStripePayment = catchAsyncErrors(
         payment: await Payment.findById(paymentId),
       });
     } else {
-      await Payment.findByIdAndUpdate(paymentId, { status: "Failed" });
+      await Payment.findByIdAndUpdate(paymentId, { paymentStatus: "Failed" });
       return next(new ErrorHandler("Payment not completed", 400));
     }
   }

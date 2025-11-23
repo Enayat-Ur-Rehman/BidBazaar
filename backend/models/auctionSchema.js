@@ -61,7 +61,7 @@ const auctionSchema = new mongoose.Schema({
   paymentHistory:[
     {
       bidderId: mongoose.Schema.Types.ObjectId,
-      status: String,
+      Status: String,
       expiresAt: Date,
       paidAt: Date,
       bidderSequenceOrder: Number,

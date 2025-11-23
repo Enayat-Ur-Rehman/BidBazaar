@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Required - BidBazaar</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f3f4f6;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+            padding: 40px 30px;
+            text-align: center;
+            color: white;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        .header p {
+            margin: 8px 0 0 0;
+            opacity: 0.95;
+            font-size: 16px;
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .alert-box {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        .alert-box h2 {
+            margin: 0 0 10px 0;
+            font-size: 22px;
+            font-weight: 600;
+        }
+        .alert-box p {
+            margin: 0;
+            font-size: 16px;
+            opacity: 0.95;
+        }
+        .winner-badge {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            display: inline-block;
+            font-weight: 600;
+            font-size: 14px;
+            margin: 20px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .auction-details {
+            background-color: #f9fafb;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 4px solid #d97706;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        .label {
+            font-weight: 600;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .value {
+            font-size: 16px;
+            color: #111827;
+            font-weight: 600;
+        }
+        .highlight {
+            color: #d97706;
+            font-size: 18px;
+        }
+        .deadline-box {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin: 25px 0;
+        }
+        .deadline-box .timer {
+            font-size: 32px;
+            font-weight: 700;
+            color: #b45309;
+            margin: 10px 0;
+        }
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+            color: white;
+            text-decoration: none;
+            padding: 16px 40px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: transform 0.2s ease;
+            box-shadow: 0 4px 15px rgba(217, 119, 6, 0.3);
+            margin: 20px 0;
+        }
+        .instructions {
+            background-color: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+        .instructions h3 {
+            margin: 0 0 15px 0;
+            color: #1e40af;
+            font-size: 18px;
+        }
+        .instructions ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .instructions li {
+            margin: 8px 0;
+            color: #374151;
+        }
+        .warning {
+            background-color: #fef2f2;
+            border: 1px solid #fca5a5;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            color: #991b1b;
+            text-align: center;
+            font-weight: 500;
+        }
+        .footer {
+            background-color: #1f2937;
+            color: #9ca3af;
+            text-align: center;
+            padding: 30px;
+            font-size: 14px;
+        }
+        .footer a {
+            color: #d97706;
+            text-decoration: none;
+        }
+        @media (max-width: 600px) {
+            .container {
+                margin: 0;
+                border-radius: 0;
+            }
+            .detail-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎉 Congratulations!</h1>
+            <p>Action Required: Complete Your Payment</p>
+        </div>
+        
+        <div class="content">
+            <div style="text-align: center;">
+                <span class="winner-badge">✓ ${bidderText}</span>
+            </div>
+
+            <p style="font-size: 18px; color: #374151; margin: 20px 0;">
+                Dear <strong>${userName}</strong>,
+            </p>
+
+            <p style="color: #6b7280; margin-bottom: 25px;">
+                Great news! You are the <strong>${bidderText}</strong> for the auction <strong>"${auctionTitle}"</strong>. 
+                To secure your win, please complete the required deposit payment within the deadline.
+            </p>
+
+            <div class="alert-box">
+                <h2>⏰ Payment Required</h2>
+                <p>Complete payment within 12 hours to confirm your win</p>
+            </div>
+
+            <div class="auction-details">
+                <h3 style="margin: 0 0 20px 0; color: #111827; font-size: 20px;">Auction Details</h3>
+                
+                <div class="detail-row">
+                    <span class="label">Item Name</span>
+                    <span class="value">${auctionTitle}</span>
+                </div>
+                
+                <div class="detail-row">
+                    <span class="label">Winning Bid Amount</span>
+                    <span class="value highlight">Rs. ${winningBid}</span>
+                </div>
+                
+                <div class="detail-row">
+                    <span class="label">Required Deposit (20%)</span>
+                    <span class="value highlight">Rs. ${depositAmount}</span>
+                </div>
+                
+                <div class="detail-row">
+                    <span class="label">Payment Deadline</span>
+                    <span class="value">${deadline}</span>
+                </div>
+            </div>
+
+            <div class="deadline-box">
+                <p style="margin: 0; font-weight: 600; color: #92400e;">Time Remaining</p>
+                <div class="timer">12 Hours</div>
+                <p style="margin: 0; font-size: 14px; color: #78350f;">Don't miss your chance!</p>
+            </div>
+
+            <div class="instructions">
+                <h3>📋 How to Complete Payment</h3>
+                <ol>
+                    <li>Log in to your BidBazaar dashboard</li>
+                    <li>Navigate to <strong>"My Payments"</strong> section</li>
+                    <li>Select this auction from pending payments</li>
+                    <li>Follow the payment instructions</li>
+                    <li>Upload payment proof to confirm</li>
+                </ol>
+            </div>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="${dashboardLink}" class="btn">Complete Payment Now →</a>
+            </div>
+
+            <div class="warning">
+                ⚠️ <strong>Important:</strong> Failure to complete payment within 12 hours will result in the offer being transferred to the next highest bidder.
+            </div>
+
+            <p style="color: #6b7280; font-size: 14px; margin-top: 30px;">
+                If you have any questions, please contact our support team.
+            </p>
+        </div>
+        
+        <div class="footer">
+            <p style="margin: 0 0 10px 0; font-weight: 600; color: #d1d5db;">BidBazaar Auction Platform</p>
+            <p style="margin: 0;">© 2025 BidBazaar. All rights reserved.</p>
+            <p style="margin: 10px 0 0 0;">
+                <a href="#">Support</a> | <a href="#">Terms</a> | <a href="#">Privacy</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

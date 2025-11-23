@@ -5,6 +5,7 @@ export const sendEmail = async ({ email, subject, message }) => {
     host: process.env.SMTP_HOST,
     port: process.env.SMTP_PORT,
     service: process.env.SMTP_SERVICE,
+    secure: false,
     auth: {
       user: process.env.SMTP_MAIL,
       pass: process.env.SMTP_PASSWORD,
@@ -16,5 +17,12 @@ export const sendEmail = async ({ email, subject, message }) => {
     subject: subject,
     text: message,
   };
-  await transporter.sendMail(options);
+  try{
+    await transporter.sendMail(options);
+    console.log(`Email Sent Successfully to ${email}`);
+  }catch(error){
+    console.error("Email Sending Failed", error);
+    throw errorl
+  }
 };
+
