@@ -11,7 +11,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import HeroBackground from "../assets/HeroBackground.png"  
 import HeroBackground2 from "../assets/HeroBg2.png"  
-import HeroBackground3 from "../assets/HeroBg3.png"  
+import HeroBackground3 from "../assets/Herobg3.png"  
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
