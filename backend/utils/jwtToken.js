@@ -1,5 +1,8 @@
 export const generateToken = (user, message, statusCode, res) => {
   const token = user.generateJsonWebToken();
+  // Never send the password hash back to the client.
+  const safeUser = user.toObject();
+  delete safeUser.password;
   res
     .status(statusCode)
     .cookie("token", token, {
@@ -11,7 +14,7 @@ export const generateToken = (user, message, statusCode, res) => {
     .json({
       success: true,
       message,
-      user,
+      user: safeUser,
       token,
     });
 };

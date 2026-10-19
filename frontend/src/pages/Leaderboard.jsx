@@ -82,7 +82,7 @@ import {
 } from "lucide-react";
 
 const Leaderboard = () => {
-  const { loading, leaderboard } = useSelector((state) => state.user);
+  const { leaderboardLoading: loading, leaderboard } = useSelector((state) => state.user);
   const [sortBy, setSortBy] = useState("moneySpent"); // moneySpent, auctionsWon
   const [sortOrder, setSortOrder] = useState("desc"); // asc, desc
 

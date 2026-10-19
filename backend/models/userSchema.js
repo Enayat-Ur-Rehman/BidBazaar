@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    selected: false,
+    select: false,
     minLength: [8, "Password must caontain at least 8 characters."],
   },
   email: String,
@@ -77,10 +77,10 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) {
-    next();
-  }
+userSchema.pre("save", async function () {
+  // Only hash when the password was set or changed; otherwise every save()
+  // would re-hash the existing hash and lock the user out.
+  if (!this.isModified("password")) return;
   this.password = await bcrypt.hash(this.password, 10);
 });
 

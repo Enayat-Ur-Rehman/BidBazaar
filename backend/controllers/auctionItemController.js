@@ -145,6 +145,9 @@ export const removeFromAuction = catchAsyncErrors(async (req, res, next) => {
   if (!auctionItem) {
     return next(new ErrorHandler("Auction not found.", 404));
   }
+  if (auctionItem.createdBy.toString() !== req.user._id.toString()) {
+    return next(new ErrorHandler("You can only delete your own auctions.", 403));
+  }
   await auctionItem.deleteOne();
   res.status(200).json({
     success: true,
@@ -161,9 +164,14 @@ export const republishItem = catchAsyncErrors(async (req, res, next) => {
   if (!auctionItem) {
     return next(new ErrorHandler("Auction not found.", 404));
   }
+  if (auctionItem.createdBy.toString() !== req.user._id.toString()) {
+    return next(
+      new ErrorHandler("You can only republish your own auctions.", 403)
+    );
+  }
   if (!req.body.startTime || !req.body.endTime) {
     return next(
-      new ErrorHandler("Starttime and Endtime for republish is mandatory.")
+      new ErrorHandler("Starttime and Endtime for republish is mandatory.", 400)
     );
   }
   if (new Date(auctionItem.endTime) > Date.now()) {
@@ -194,9 +202,11 @@ export const republishItem = catchAsyncErrors(async (req, res, next) => {
 
   if (auctionItem.highestBidder) {
     const highestBidder = await User.findById(auctionItem.highestBidder);
-    highestBidder.moneySpent -= auctionItem.currentBid;
-    highestBidder.auctionsWon -= 1;
-    highestBidder.save();
+    if (highestBidder) {
+      highestBidder.moneySpent -= auctionItem.currentBid;
+      highestBidder.auctionsWon -= 1;
+      await highestBidder.save();
+    }
   }
 
   data.bids = [];

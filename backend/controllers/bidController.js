@@ -93,9 +93,9 @@ export const placeBid = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("Auction Item not found.", 404));
   }
   
-  const { amount } = req.body;
+  const amount = Number(req.body.amount);
   
-  if (!amount) {
+  if (!amount || Number.isNaN(amount) || amount <= 0) {
     return next(new ErrorHandler("Please place your bid.", 400));
   }
   

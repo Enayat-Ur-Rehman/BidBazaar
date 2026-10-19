@@ -14,10 +14,15 @@ import { endedAuctionCron } from "./automation/endedAuctionCron.js";
 import { verifyCommissionCron } from "./automation/verifyCommissionCron.js";
 import paymentRoutes from "./router/paymentRoutes.js";
 import {paymentExpiryCron} from "./automation/paymentExpiryCheckCron.js";
+import os from "os";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 config({
-  path: "./config/config.env",
+  path: path.join(__dirname, "config", "config.env"),
 });
 
 connection();
@@ -25,7 +30,7 @@ connection();
 app.use(
   cors({
     origin: [process.env.FRONTEND_URL],
-    methods: ["POST", "GET", "PUT", "DELETE"],
+    methods: ["POST", "GET", "PUT", "PATCH", "DELETE"],
     credentials: true,
   })
 );
@@ -36,7 +41,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
   fileUpload({
     useTempFiles: true,
-    tempFileDir: "/tmp/",
+    tempFileDir: os.tmpdir(),
   })
 );
 
@@ -51,8 +56,6 @@ endedAuctionCron();
 paymentExpiryCron();
 verifyCommissionCron();
 
-
-connection();
 app.use(errorMiddleware);
 
 export default app;

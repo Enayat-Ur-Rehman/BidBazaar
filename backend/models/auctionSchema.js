@@ -10,8 +10,10 @@ const auctionSchema = new mongoose.Schema({
     enum: ["New", "Used"],
   },
   currentBid: { type: Number, default: 0 },
-  startTime: String,
-  endTime: String,
+  // Stored as real dates so range queries ($gt/$lt) in the controllers and
+  // the ended-auction cron work. (As strings they never matched.)
+  startTime: Date,
+  endTime: Date,
   image: {
     public_id: {
       type: String,

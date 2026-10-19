@@ -299,7 +299,7 @@ const ViewMyAuctions = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredAuctions.map((auction) => (
-              <CardTwo imgSrc={auction.image?.url} title={auction.title} startingBid={auction.startingBid} startTime={auction.startingBid} endTime={auction.endTime} id={auction._id}  />
+              <CardTwo imgSrc={auction.image?.url} title={auction.title} startingBid={auction.startingBid} startTime={auction.startTime} endTime={auction.endTime} id={auction._id} key={auction._id} />
             ))}
           </div>
         </>

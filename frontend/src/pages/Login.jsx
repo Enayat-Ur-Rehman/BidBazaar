@@ -8,33 +8,69 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const { loading, isAuthenticated, user } = useSelector((state) => state.user);
+  const { loading, isAuthenticated, user, loginError } = useSelector((state) => state.user);
 
   const navigateTo = useNavigate();
   const dispatch = useDispatch();
 
+  // 🔍 DEBUG: Log email changes
+  const handleEmailChange = (e) => {
+    const newEmail = e.target.value;
+    console.log("📧 Email changed:", newEmail);
+    setEmail(newEmail);
+  };
+
+  // 🔍 DEBUG: Log password changes
+  const handlePasswordChange = (e) => {
+    const newPassword = e.target.value;
+    console.log("🔐 Password changed: (length: " + newPassword.length + ")");
+    setPassword(newPassword);
+  };
+
   const handleLogin = (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("email", email);
-    formData.append("password", password);
-    dispatch(login(formData));
+    console.log("🚀 Login form submitted");
+    console.log("📧 Email:", email);
+    console.log("🔐 Password length:", password.length);
+    
+    if (!email || !password) {
+      console.warn("⚠️  Email or password is empty!");
+      return;
+    }
+
+    // Send as JSON, not FormData
+    const loginData = {
+      email,
+      password,
+    };
+    
+    console.log("📤 Dispatching login with data:", { email, password: "****" });
+    dispatch(login(loginData));
   };
 
   useEffect(() => {
+    console.log("📊 Auth state changed:", { isAuthenticated, loading, userRole: user?.role });
+    
     if (isAuthenticated && user) {
+      console.log("✅ User authenticated. Redirecting based on role:", user.role);
       // Redirect based on user role
       if (user.role === "Auctioneer") {
+        console.log("↩️  Redirecting to /view-my-auctions");
         navigateTo("/view-my-auctions");
       } else if (user.role === "Bidder") {
+        console.log("↩️  Redirecting to /auctions");
         navigateTo("/auctions");
       } else if (user.role === "Super Admin") {
+        console.log("↩️  Redirecting to /dashboard");
         navigateTo("/dashboard");
       } else {
+        console.log("↩️  Redirecting to home");
         navigateTo("/");
       }
+    } else if (!loading) {
+      console.log("❌ Not authenticated and not loading");
     }
-  }, [isAuthenticated, user, navigateTo]);
+  }, [isAuthenticated, user, navigateTo, loading]);
 
   return (
     <section className="w-full px-5 py-8 lg:px-8 flex flex-col min-h-screen justify-center items-center">
@@ -60,11 +96,15 @@ const Login = () => {
             <input
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={handleEmailChange}
               placeholder="Enter your email"
-              className="w-full px-4 py-3 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D6482B] focus:border-transparent transition-all"
+              autoComplete="email"
+              className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D6482B] focus:border-transparent transition-all ${loginError && loginError.toLowerCase().includes("email") ? "border-red-500" : "border-stone-300"}`}
               required
             />
+            {loginError && loginError.toLowerCase().includes("email") && (
+              <p className="text-red-500 text-sm">{loginError}</p>
+            )}
           </div>
 
           {/* Password Field */}
@@ -76,11 +116,15 @@ const Login = () => {
             <input
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handlePasswordChange}
               placeholder="Enter your password"
-              className="w-full px-4 py-3 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D6482B] focus:border-transparent transition-all"
+              autoComplete="current-password"
+              className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D6482B] focus:border-transparent transition-all ${loginError && loginError.toLowerCase().includes("password") ? "border-red-500" : "border-stone-300"}`}
               required
             />
+            {loginError && loginError.toLowerCase().includes("password") && (
+              <p className="text-red-500 text-sm">{loginError}</p>
+            )}
           </div>
 
           {/* Forgot Password Link */}

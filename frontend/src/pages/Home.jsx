@@ -712,7 +712,7 @@ const Home = () => {
       <CTASection isAuthenticated={isAuthenticated} />
       <Footer></Footer>
       
-      <style jsx = "true" >{`
+      <style jsx>{`
         @keyframes fade-in {
           from {
             opacity: 0;

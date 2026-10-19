@@ -22,8 +22,65 @@ const SignUp = () => {
   const navigateTo = useNavigate();
   const dispatch = useDispatch();
 
+  // 🔍 DEBUG: Log role changes
+  const handleRoleChange = (e) => {
+    const newRole = e.target.value;
+    console.log("👤 Role changed to:", newRole);
+    setRole(newRole);
+  };
+
+  // 🔍 DEBUG: Log form field changes
+  const handleFieldChange = (fieldName, setValue) => {
+    return (e) => {
+      const value = e.target.value;
+      console.log(`📝 ${fieldName} changed:`, value);
+      setValue(value);
+    };
+  };
+
   const handleRegister = (e) => {
     e.preventDefault();
+    console.log("🚀 Register form submitted");
+    console.log("📋 Form Data:", {
+      userName,
+      email,
+      phone,
+      address,
+      role,
+      hasProfileImage: !!profileImage,
+      hasPassword: !!password,
+    });
+
+    // Validation checks
+    if (!userName || !email || !phone || !address || !role || !password) {
+      console.warn("⚠️  Some required fields are empty!");
+      console.warn("Missing fields:", {
+        userName: !userName,
+        email: !email,
+        phone: !phone,
+        address: !address,
+        role: !role,
+        password: !password,
+      });
+      return;
+    }
+
+    console.log("ℹ️  Image is optional - can proceed without uploading");
+
+    // Check auctioneer-specific fields
+    if (role === "Auctioneer") {
+      console.log("🏦 Auctioneer mode - validating payment details...");
+      if (!bankName || !bankAccountNumber || !bankAccountName) {
+        console.warn("⚠️  Bank details incomplete for Auctioneer!");
+        return;
+      }
+      if (!easypaisaAccountNumber || !paypalEmail) {
+        console.warn("⚠️  Easypaisa or PayPal details missing for Auctioneer!");
+        return;
+      }
+      console.log("✅ Auctioneer payment details complete");
+    }
+
     const formData = new FormData();
     formData.append("userName", userName);
     formData.append("email", email);
@@ -31,29 +88,62 @@ const SignUp = () => {
     formData.append("password", password);
     formData.append("address", address);
     formData.append("role", role);
-    formData.append("profileImage", profileImage);
-    role === "Auctioneer" &&
-      (formData.append("bankAccountName", bankAccountName),
-      formData.append("bankAccountNumber", bankAccountNumber),
-      formData.append("bankName", bankName),
-      formData.append("easypaisaAccountNumber", easypaisaAccountNumber),
-      formData.append("paypalEmail", paypalEmail));
+    
+    // Only append image if selected
+    if (profileImage) {
+      formData.append("profileImage", profileImage);
+      console.log("📸 Image details:", {
+        name: profileImage.name,
+        type: profileImage.type,
+        size: profileImage.size,
+      });
+    } else {
+      console.log("⚠️  No image selected - server will use placeholder");
+    }
+    
+    if (role === "Auctioneer") {
+      formData.append("bankAccountName", bankAccountName);
+      formData.append("bankAccountNumber", bankAccountNumber);
+      formData.append("bankName", bankName);
+      formData.append("easypaisaAccountNumber", easypaisaAccountNumber);
+      formData.append("paypalEmail", paypalEmail);
+      console.log("💳 Added Auctioneer payment methods to FormData");
+    }
+    
+    console.log("📤 Dispatching register action...");
     dispatch(register(formData));
   };
 
   useEffect(() => {
+    console.log("📊 Auth state changed:", { isAuthenticated, loading });
     if (isAuthenticated) {
+      console.log("✅ User registered successfully. Redirecting to home...");
       navigateTo("/");
     }
-  }, [dispatch, loading, isAuthenticated]);
+  }, [dispatch, loading, isAuthenticated, navigateTo]);
 
   const imageHandler = (e) => {
     const file = e.target.files[0];
+    if (!file) {
+      console.log("📸 No file selected");
+      return;
+    }
+    console.log("📷 Image file selected:", { name: file.name, type: file.type, size: file.size });
+    
+    if (!["image/png", "image/jpeg", "image/webp"].includes(file.type)) {
+      console.error("❌ Invalid image format. Allowed: PNG, JPEG, WebP");
+      return;
+    }
+
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
+      console.log("✅ Image preview generated successfully");
       setProfileImagePreview(reader.result);
       setProfileImage(file);
+    };
+    reader.onerror = () => {
+      console.error("❌ Error reading file:", reader.error);
     };
   };
 
@@ -79,7 +169,8 @@ const SignUp = () => {
                 <input
                   type="text"
                   value={userName}
-                  onChange={(e) => setUserName(e.target.value)}
+                  onChange={handleFieldChange("Full Name", setUserName)}
+                  autoComplete="name"
                   className="text-[16px] py-2 bg-transparent border-b-[1px] border-b-stone-500 focus:outline-none"
                 />
               </div>
@@ -88,7 +179,8 @@ const SignUp = () => {
                 <input
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={handleFieldChange("Email", setEmail)}
+                  autoComplete="email"
                   className="text-[16px] py-2 bg-transparent border-b-[1px] border-b-stone-500 focus:outline-none"
                 />
               </div>
@@ -99,7 +191,8 @@ const SignUp = () => {
                 <input
                   type="number"
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  onChange={handleFieldChange("Phone", setPhone)}
+                  autoComplete="tel"
                   className="text-[16px] py-2 bg-transparent border-b-[1px] border-b-stone-500 focus:outline-none"
                 />
               </div>
@@ -108,7 +201,8 @@ const SignUp = () => {
                 <input
                   type="text"
                   value={address}
-                  onChange={(e) => setAddress(e.target.value)}
+                  onChange={handleFieldChange("Address", setAddress)}
+                  autoComplete="street-address"
                   className="text-[16px] py-2 bg-transparent border-b-[1px] border-b-stone-500 focus:outline-none"
                 />
               </div>
@@ -118,7 +212,7 @@ const SignUp = () => {
                 <label className="text-[16px] text-stone-600">Role</label>
                 <select
                   value={role}
-                  onChange={(e) => setRole(e.target.value)}
+                  onChange={handleRoleChange}
                   className="text-[16px] py-2 bg-transparent border-b-[1px] border-b-stone-500 focus:outline-none"
                 >
                   <option value="">Select Role</option>
@@ -131,7 +225,8 @@ const SignUp = () => {
                 <input
                   type="password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={handleFieldChange("Password", setPassword)}
+                  autoComplete="current-password"
                   className="text-[16px] py-2 bg-transparent border-b-[1px] border-b-stone-500 focus:outline-none"
                 />
               </div>
@@ -168,7 +263,7 @@ const SignUp = () => {
                 <div className="flex flex-col gap-1 sm:flex-row sm:gap-4">
                   <select
                     value={bankName}
-                    onChange={(e) => setBankName(e.target.value)}
+                    onChange={handleFieldChange("Bank Name", setBankName)}
                     className="text-[16px] py-2 bg-transparent border-b-[1px] border-b-stone-500 focus:outline-none sm:flex-1"
                     disabled={role === "Bidder"}
                   >
@@ -182,7 +277,7 @@ const SignUp = () => {
                     type="text"
                     value={bankAccountNumber}
                     placeholder="IBAN / IFSC"
-                    onChange={(e) => setBankAccountNumber(e.target.value)}
+                    onChange={handleFieldChange("Bank Account Number", setBankAccountNumber)}
                     className="text-[16px] py-2 bg-transparent border-b-[1px] border-b-stone-500 focus:outline-none sm:flex-1"
                     disabled={role === "Bidder"}
                   />
@@ -190,7 +285,7 @@ const SignUp = () => {
                     type="text"
                     value={bankAccountName}
                     placeholder="Bank Account UserName"
-                    onChange={(e) => setBankAccountName(e.target.value)}
+                    onChange={handleFieldChange("Bank Account Name", setBankAccountName)}
                     className="text-[16px] py-2 bg-transparent border-b-[1px] border-b-stone-500 focus:outline-none sm:flex-1"
                     disabled={role === "Bidder"}
                   />
@@ -205,7 +300,7 @@ const SignUp = () => {
                     type="number"
                     value={easypaisaAccountNumber}
                     placeholder="Easypaisa Account Number"
-                    onChange={(e) => setEasypaisaAccountNumber(e.target.value)}
+                    onChange={handleFieldChange("Easypaisa Account", setEasypaisaAccountNumber)}
                     className="text-[16px] py-2 bg-transparent border-b-[1px] border-b-stone-500 focus:outline-none sm:flex-1"
                     disabled={role === "Bidder"}
                   />
@@ -213,7 +308,7 @@ const SignUp = () => {
                     type="email"
                     value={paypalEmail}
                     placeholder="Paypal Email"
-                    onChange={(e) => setPaypalEmail(e.target.value)}
+                    onChange={handleFieldChange("PayPal Email", setPaypalEmail)}
                     className="text-[16px] py-2 bg-transparent border-b-[1px] border-b-stone-500 focus:outline-none sm:flex-1"
                     disabled={role === "Bidder"}
                   />

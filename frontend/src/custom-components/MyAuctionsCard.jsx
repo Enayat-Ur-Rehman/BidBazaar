@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
+
+const toLocalISOString = (date) => {
+  const offset = date.getTimezoneOffset() * 60000;
+  return new Date(date - offset).toISOString().slice(0, 16);
+};
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import { deleteAuction, republishAuction } from "@/store/slices/auctionSlice";
-import { Eye, Trash2, RefreshCw, Clock, DollarSign, X, Calendar, AlertCircle } from "lucide-react";
+import { Eye, Trash2, RefreshCw, Clock, DollarSign, X, AlertCircle } from "lucide-react";
 
 const CardTwo = ({ imgSrc, title, startingBid, startTime, endTime, id }) => {
   const calculateTimeLeft = () => {
@@ -282,38 +285,28 @@ const Drawer = ({ setOpenDrawer, openDrawer, id }) => {
             {/* Start Time */}
             <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 border border-blue-200">
               <label className="flex items-center gap-2 text-sm font-semibold text-blue-900 mb-3">
-                <Calendar className="w-4 h-4" />
                 Auction Start Time
               </label>
-              <DatePicker
-                selected={startTime}
-                onChange={(date) => setStartTime(date)}
-                showTimeSelect
-                timeFormat="HH:mm"
-                timeIntervals={15}
-                dateFormat="MMMM d, yyyy h:mm aa"
-                minDate={new Date()}
+              <input
+                type="datetime-local"
+                value={startTime}
+                onChange={(e) => setStartTime(e.target.value)}
+                min={toLocalISOString(new Date())}
                 className="w-full text-base py-3 px-4 bg-white border-2 border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 font-medium"
-                placeholderText="Select start date and time"
               />
             </div>
 
             {/* End Time */}
             <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-4 border border-orange-200">
               <label className="flex items-center gap-2 text-sm font-semibold text-orange-900 mb-3">
-                <Calendar className="w-4 h-4" />
                 Auction End Time
               </label>
-              <DatePicker
-                selected={endTime}
-                onChange={(date) => setEndTime(date)}
-                showTimeSelect
-                timeFormat="HH:mm"
-                timeIntervals={15}
-                dateFormat="MMMM d, yyyy h:mm aa"
-                minDate={startTime || new Date()}
+              <input
+                type="datetime-local"
+                value={endTime}
+                onChange={(e) => setEndTime(e.target.value)}
+                min={startTime || toLocalISOString(new Date())}
                 className="w-full text-base py-3 px-4 bg-white border-2 border-orange-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900 font-medium"
-                placeholderText="Select end date and time"
               />
             </div>
 

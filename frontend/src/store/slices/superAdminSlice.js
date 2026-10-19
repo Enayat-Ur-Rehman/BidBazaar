@@ -117,7 +117,7 @@
 //     );
 //   } catch (error) {
 //     dispatch(superAdminSlice.actions.failedForMonthlyRevenue());
-//     console.error(error.response.data.message);
+//     console.error((error.response?.data?.message || "Something went wrong. Is the server running?"));
 //   }
 // };
 
@@ -131,7 +131,7 @@
 //     dispatch(superAdminSlice.actions.successForAllUsers(response.data));
 //   } catch (error) {
 //     dispatch(superAdminSlice.actions.failureForAllUsers());
-//     console.error(error.response.data.message);
+//     console.error((error.response?.data?.message || "Something went wrong. Is the server running?"));
 //   }
 // };
 
@@ -149,7 +149,7 @@
 //     );
 //   } catch (error) {
 //     dispatch(superAdminSlice.actions.failureForPaymentProofs());
-//     console.error(error.response.data.message);
+//     console.error((error.response?.data?.message || "Something went wrong. Is the server running?"));
 //   }
 // };
 
@@ -165,8 +165,8 @@
 //     toast.success(response.data.message);
 //   } catch (error) {
 //     dispatch(superAdminSlice.actions.failureForDeletePaymentProof());
-//     console.error(error.response.data.message);
-//     toast.error(error.response.data.message);
+//     console.error((error.response?.data?.message || "Something went wrong. Is the server running?"));
+//     toast.error((error.response?.data?.message || "Something went wrong. Is the server running?"));
 //   }
 // };
 
@@ -184,7 +184,7 @@
 //     );
 //   } catch (error) {
 //     dispatch(superAdminSlice.actions.failureForSinglePaymentProofDetail());
-//     console.error(error.response.data.message);
+//     console.error((error.response?.data?.message || "Something went wrong. Is the server running?"));
 //   }
 // };
 
@@ -202,8 +202,8 @@
 //     dispatch(superAdminSlice.actions.clearAllErrors());
 //   } catch (error) {
 //     dispatch(superAdminSlice.actions.failureForUpdatePaymentProof());
-//     console.error(error.response.data.message);
-//     toast.error(error.response.data.message);
+//     console.error((error.response?.data?.message || "Something went wrong. Is the server running?"));
+//     toast.error((error.response?.data?.message || "Something went wrong. Is the server running?"));
 //   }
 // };
 
@@ -219,8 +219,8 @@
 //     dispatch(getAllAuctionItems());
 //   } catch (error) {
 //     dispatch(superAdminSlice.actions.failureForAuctionItemDelete());
-//     console.error(error.response.data.message);
-//     toast.error(error.response.data.message);
+//     console.error((error.response?.data?.message || "Something went wrong. Is the server running?"));
+//     toast.error((error.response?.data?.message || "Something went wrong. Is the server running?"));
 //   }
 // };
 

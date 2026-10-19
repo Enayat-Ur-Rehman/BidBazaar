@@ -238,16 +238,20 @@ const AppContent = () => {
 // --- Root App Component ---
 const App = () => {
   const dispatch = useDispatch();
-  const { loading } = useSelector((state) => state.user);
+  const { authChecked } = useSelector((state) => state.user);
 
   useEffect(() => {
+    console.log("🚀 App mounted - fetching initial data...");
     dispatch(fetchUser());
     dispatch(getAllAuctionItems());
     dispatch(fetchLeaderboard());
-  }, [dispatch]);
+    console.log("✅ Initial data fetch dispatched");
+  }, []); // Empty dependency array - only run once on mount
 
-  // Show loading screen while fetching user data
-  if (loading) {
+  // Show the loading screen only while the initial session check runs.
+  // (Using the generic `loading` flag here unmounted the whole router during
+  // login/register, wiping form state and redirecting protected pages.)
+  if (!authChecked) {
     return (
       <ThemeProvider>
         <div className="w-full h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
@@ -262,7 +266,12 @@ const App = () => {
 
   return (
     <ThemeProvider>
-      <Router>
+      <Router
+        future={{
+          v7_startTransition: true,
+          v7_relativeSplatPath: true,
+        }}
+      >
         <AppContent />
         <ToastContainer
           position="top-right"

@@ -209,8 +209,8 @@ export const republishAuction = (id, data) => async (dispatch) => {
     dispatch(auctionSlice.actions.resetSlice());
   } catch (error) {
     dispatch(auctionSlice.actions.republishItemFailed());
-    toast.error(error.response.data.message);
-    console.error(error.response.data.message);
+    toast.error((error.response?.data?.message || "Something went wrong. Is the server running?"));
+    console.error((error.response?.data?.message || "Something went wrong. Is the server running?"));
     dispatch(auctionSlice.actions.resetSlice());
   }
 };
@@ -232,8 +232,8 @@ export const deleteAuction = (id) => async (dispatch) => {
     dispatch(auctionSlice.actions.resetSlice());
   } catch (error) {
     dispatch(auctionSlice.actions.deleteAuctionItemFailed());
-    toast.error(error.response.data.message);
-    console.error(error.response.data.message);
+    toast.error((error.response?.data?.message || "Something went wrong. Is the server running?"));
+    console.error((error.response?.data?.message || "Something went wrong. Is the server running?"));
     dispatch(auctionSlice.actions.resetSlice());
   }
 };

@@ -9,6 +9,10 @@ const userSlice = createSlice({
     isAuthenticated: false,
     user: {},
     leaderboard: [],
+    leaderboardLoading: false,
+    loginError: null,
+    // true once the initial "who am I" check has finished (success or not)
+    authChecked: false,
   },
   reducers: {
     registerRequest(state, action) {
@@ -30,16 +34,19 @@ const userSlice = createSlice({
       state.loading = true;
       state.isAuthenticated = false;
       state.user = {};
+      state.loginError = null;
     },
     loginSuccess(state, action) {
       state.loading = false;
       state.isAuthenticated = true;
       state.user = action.payload.user;
+      state.loginError = null;
     },
     loginFailed(state, action) {
       state.loading = false;
       state.isAuthenticated = false;
       state.user = {};
+      state.loginError = action.payload || null;
     },
     fetchUserRequest(state, action) {
       state.loading = true;
@@ -50,14 +57,17 @@ const userSlice = createSlice({
       state.loading = false;
       state.isAuthenticated = true;
       state.user = action.payload;
+      state.authChecked = true;
     },
     fetchUserFailed(state, action) {
       state.loading = false;
       state.isAuthenticated = false;
       state.user = {};
+      state.authChecked = true;
     },
 
     logoutSuccess(state, action) {
+      state.loading = false;
       state.isAuthenticated = false;
       state.user = {};
     },
@@ -67,22 +77,19 @@ const userSlice = createSlice({
       state.user = state.user;
     },
     fetchLeaderboardRequest(state, action) {
-      state.loading = true;
+      state.leaderboardLoading = true;
       state.leaderboard = [];
     },
     fetchLeaderboardSuccess(state, action) {
-      state.loading = false;
+      state.leaderboardLoading = false;
       state.leaderboard = action.payload;
     },
     fetchLeaderboardFailed(state, action) {
-      state.loading = false;
+      state.leaderboardLoading = false;
       state.leaderboard = [];
     },
     clearAllErrors(state, action) {
-      state.user = state.user;
-      state.isAuthenticated = state.isAuthenticated;
-      state.leaderboard = state.leaderboard;
-      state.loading = false;
+      // Kept for compatibility; loading flags are reset by the specific actions.
     },
   },
 });
@@ -90,20 +97,26 @@ const userSlice = createSlice({
 export const register = (data) => async (dispatch) => {
   dispatch(userSlice.actions.registerRequest());
   try {
+    console.log("📤 Sending register request with FormData...");
     const response = await axios.post(
       "http://localhost:5000/api/v1/user/register",
       data,
       {
         withCredentials: true,
-        headers: { "Content-Type": "multipart/form-data" },
       }
     );
+    console.log("✅ Register successful:", response.data);
     dispatch(userSlice.actions.registerSuccess(response.data));
     toast.success(response.data.message);
     dispatch(userSlice.actions.clearAllErrors());
   } catch (error) {
+    console.error("❌ Register failed:");
+    console.error("Status:", error.response?.status);
+    console.error("Message:", error.response?.data?.message);
+    console.error("Error:", error.response?.data?.error || error.message);
+    console.error("Full error:", error.response?.data);
     dispatch(userSlice.actions.registerFailed());
-    toast.error(error.response.data.message);
+    toast.error(error.response?.data?.message || "Registration failed. Check console for details.");
     dispatch(userSlice.actions.clearAllErrors());
   }
 };
@@ -111,20 +124,27 @@ export const register = (data) => async (dispatch) => {
 export const login = (data) => async (dispatch) => {
   dispatch(userSlice.actions.loginRequest());
   try {
+    console.log("🔐 Sending login request...");
     const response = await axios.post(
       "http://localhost:5000/api/v1/user/login",
       data,
       {
         withCredentials: true,
-        headers: { "Content-Type": "application/json" },
       }
     );
+    console.log("✅ Login successful:", response.data);
     dispatch(userSlice.actions.loginSuccess(response.data));
     toast.success(response.data.message);
     dispatch(userSlice.actions.clearAllErrors());
   } catch (error) {
-    dispatch(userSlice.actions.loginFailed());
-    toast.error(error.response.data.message);
+    console.error("❌ Login failed:");
+    console.error("Status:", error.response?.status);
+    console.error("Message:", error.response?.data?.message);
+    console.error("Error:", error.response?.data?.error || error.message);
+    console.error("Full error:", error.response?.data);
+    const errorMessage = error.response?.data?.message || "Login failed.";
+    dispatch(userSlice.actions.loginFailed(errorMessage));
+    toast.error(errorMessage);
     dispatch(userSlice.actions.clearAllErrors());
   }
 };
@@ -140,7 +160,7 @@ export const logout = () => async (dispatch) => {
     dispatch(userSlice.actions.clearAllErrors());
   } catch (error) {
     dispatch(userSlice.actions.logoutFailed());
-    toast.error(error.response.data.message);
+    toast.error(error.response?.data?.message || "Logout failed.");
     dispatch(userSlice.actions.clearAllErrors());
   }
 };
@@ -151,12 +171,18 @@ export const fetchUser = () => async (dispatch) => {
     const response = await axios.get("http://localhost:5000/api/v1/user/me", {
       withCredentials: true,
     });
+    console.log("✅ User fetched successfully:", response.data.user);
     dispatch(userSlice.actions.fetchUserSuccess(response.data.user));
     dispatch(userSlice.actions.clearAllErrors());
   } catch (error) {
+    // 400/401 is expected when user is not authenticated
+    if (error.response?.status === 400 || error.response?.status === 401) {
+      console.log("ℹ️  User not authenticated - this is expected on initial load");
+    } else {
+      console.error("❌ User fetch error:", error.response?.status, error.response?.data?.message || error.message);
+    }
     dispatch(userSlice.actions.fetchUserFailed());
     dispatch(userSlice.actions.clearAllErrors());
-    console.error(error);
   }
 };
 

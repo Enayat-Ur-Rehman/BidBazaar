@@ -35,7 +35,7 @@ export const postCommissionProof = (data) => async (dispatch) => {
     toast.success(response.data.message);
   } catch (error) {
     dispatch(commissionSlice.actions.postCommissionProofFailed());
-    toast.error(error.response.data.message);
+    toast.error((error.response?.data?.message || "Something went wrong. Is the server running?"));
   }
 };
 

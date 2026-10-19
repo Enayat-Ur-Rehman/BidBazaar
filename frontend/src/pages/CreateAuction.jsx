@@ -261,16 +261,13 @@
 
 import { createAuction, getUnpaidCommission } from "@/store/slices/auctionSlice";
 import React, { useEffect, useState } from "react";
-import DatePicker from "react-datepicker";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import "react-datepicker/dist/react-datepicker.css";
 import {
   AlertCircle,
   Upload,
   Image as ImageIcon,
   DollarSign,
-  Calendar,
   Tag,
   FileText,
   CheckCircle2,
@@ -279,6 +276,11 @@ import {
   Info,
   Sparkles
 } from "lucide-react";
+
+const toLocalISOString = (date) => {
+  const offset = date.getTimezoneOffset() * 60000;
+  return new Date(date - offset).toISOString().slice(0, 16);
+};
 
 const CreateAuction = () => {
   const [image, setImage] = useState("");
@@ -476,7 +478,7 @@ const CreateAuction = () => {
                           onChange={(e) => setStartingBid(e.target.value)}
                           placeholder="0.00"
                           step="0.01"
-                          min="0"
+                          min="100"
                           className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                           required
                         />
@@ -513,16 +515,12 @@ const CreateAuction = () => {
                         Start Time *
                       </label>
                       <div className="relative">
-                        <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none z-10" />
-                        <DatePicker
-                          selected={startTime}
-                          onChange={(date) => setStartTime(date)}
-                          showTimeSelect
-                          timeFormat="HH:mm"
-                          timeIntervals={15}
-                          dateFormat="MMMM d, yyyy h:mm aa"
-                          minDate={new Date()}
-                          className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                        <input
+                          type="datetime-local"
+                          value={startTime ? toLocalISOString(startTime) : ""}
+                          onChange={(e) => setStartTime(e.target.value ? new Date(e.target.value) : "")}
+                          min={toLocalISOString(new Date())}
+                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                           required
                         />
                       </div>
@@ -533,16 +531,12 @@ const CreateAuction = () => {
                         End Time *
                       </label>
                       <div className="relative">
-                        <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none z-10" />
-                        <DatePicker
-                          selected={endTime}
-                          onChange={(date) => setEndTime(date)}
-                          showTimeSelect
-                          timeFormat="HH:mm"
-                          timeIntervals={15}
-                          dateFormat="MMMM d, yyyy h:mm aa"
-                          minDate={startTime || new Date()}
-                          className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                        <input
+                          type="datetime-local"
+                          value={endTime ? toLocalISOString(endTime) : ""}
+                          onChange={(e) => setEndTime(e.target.value ? new Date(e.target.value) : "")}
+                          min={startTime ? toLocalISOString(startTime) : toLocalISOString(new Date())}
+                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                           required
                         />
                       </div>
