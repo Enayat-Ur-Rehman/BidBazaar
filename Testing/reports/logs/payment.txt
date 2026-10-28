@@ -6,4 +6,4 @@ e2e/payment.py::test_payment_with_declined_card_is_rejected[chromium] PASSED
 e2e/payment.py::test_expired_payment_cannot_be_paid[chromium] PASSED
 
 - Generated html report: file:///E:/Sem5Project/BidBazaar/Testing/reports/payment.html -
-============================= 3 passed in 40.27s ==============================
+============================= 3 passed in 39.02s ==============================

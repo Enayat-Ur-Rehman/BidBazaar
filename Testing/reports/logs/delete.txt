@@ -15,14 +15,14 @@ api/delete.py::test_api_delete_auction
       Result   : PASS
 
   > real auction -> deleted
-      Request  : DELETE /auctionitem/delete/6ae1ecbfcc46b6d5e97cf5d1
+      Request  : DELETE /auctionitem/delete/6ae1f068cc46b6d5e97cfcbb
       Response : 200 OK
       Expected : 200
       Message  : Auction item deleted successfully.
       Result   : PASS
 
   > same auction again -> already gone
-      Request  : DELETE /auctionitem/delete/6ae1ecbfcc46b6d5e97cf5d1
+      Request  : DELETE /auctionitem/delete/6ae1f068cc46b6d5e97cfcbb
       Response : 404 Not Found
       Expected : 404
       Message  : Auction not found.
@@ -30,4 +30,4 @@ api/delete.py::test_api_delete_auction
 PASSED
 
 - Generated html report: file:///E:/Sem5Project/BidBazaar/Testing/reports/delete.html -
-============================== 1 passed in 1.29s ==============================
+============================== 1 passed in 1.50s ==============================

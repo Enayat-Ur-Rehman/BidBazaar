@@ -11,4 +11,4 @@ mocking/server_error.py::test_auctions_page_when_server_errors[chromium]
 PASSED
 
 - Generated html report: file:///E:/Sem5Project/BidBazaar/Testing/reports/server_error.html -
-============================== 1 passed in 3.80s ==============================
+============================== 1 passed in 3.54s ==============================

@@ -6,4 +6,4 @@ e2e/register.py::test_register_with_existing_email_is_rejected[chromium] PASSED
 e2e/register.py::test_register_auctioneer_without_bank_details_is_blocked[chromium] PASSED
 
 - Generated html report: file:///E:/Sem5Project/BidBazaar/Testing/reports/register.html -
-============================= 3 passed in 11.02s ==============================
+============================= 3 passed in 10.66s ==============================

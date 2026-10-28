@@ -6,4 +6,4 @@ e2e/place_bid.py::test_valid_bid_is_accepted_and_shown_as_current_bid[chromium] 
 e2e/place_bid.py::test_rebid_by_same_bidder_updates_existing_bid_not_a_new_one[chromium] PASSED
 
 - Generated html report: file:///E:/Sem5Project/BidBazaar/Testing/reports/place_bid.html -
-============================= 3 passed in 20.90s ==============================
+============================= 3 passed in 22.34s ==============================

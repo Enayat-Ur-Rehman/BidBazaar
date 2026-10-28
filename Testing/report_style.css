@@ -210,3 +210,21 @@ p.filter { color: var(--muted); }
   max-height: 400px;
 }
 .logwrapper .logexpander { color: #e5e7eb; }
+
+/* big screenshot viewer under the row instead of a 320px thumbnail */
+div.media {
+  float: none;
+  width: auto;
+  max-width: 900px;
+  height: auto;
+  margin: 10px auto 0;
+  overflow: visible;
+}
+.media-container { height: auto; grid-template-columns: 36px auto 36px; }
+.media-container__viewport img { object-fit: contain; max-height: none; width: 100%; height: auto; }
+.media__name { font-size: 15px; margin-top: 8px; }
+
+/* passed tests have no useful log (output goes to the terminal) */
+tbody.passed .logwrapper { display: none; }
+.logwrapper { background: transparent; max-height: 320px; margin-top: 10px; }
+.logwrapper .log { top: 0; }

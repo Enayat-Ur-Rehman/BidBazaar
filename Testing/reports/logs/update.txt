@@ -15,7 +15,7 @@ api/update.py::test_api_update_payment_proof_status
       Result   : PASS
 
   > real proof -> status updated
-      Request  : PUT /superadmin/paymentproof/status/update/6ae1ecbccc46b6d5e97cf5b5
+      Request  : PUT /superadmin/paymentproof/status/update/6ae1f064cc46b6d5e97cfc9b
       Response : 200 OK
       Expected : 200
       Message  : Payment proof amount and status updated.
@@ -30,4 +30,4 @@ api/update.py::test_api_update_payment_proof_status
 PASSED
 
 - Generated html report: file:///E:/Sem5Project/BidBazaar/Testing/reports/update.html -
-============================== 1 passed in 2.39s ==============================
+============================== 1 passed in 1.37s ==============================

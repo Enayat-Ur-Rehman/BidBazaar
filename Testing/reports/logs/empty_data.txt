@@ -11,4 +11,4 @@ mocking/empty_data.py::test_auctions_page_with_empty_data[chromium]
 PASSED
 
 - Generated html report: file:///E:/Sem5Project/BidBazaar/Testing/reports/empty_data.html -
-============================== 1 passed in 3.82s ==============================
+============================== 1 passed in 3.61s ==============================

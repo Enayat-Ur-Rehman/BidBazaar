@@ -16,8 +16,8 @@ e2e/place_bid.py::test_bid_below_minimum_shows_inline_error[chromium] FAILED [10
 ================================== FAILURES ===================================
 _____________ test_bid_below_minimum_shows_inline_error[chromium] _____________
 
-page = <Page url='http://localhost:5173/auction/item/6ae1ed30cc46b6d5e97cf6b5'>
-auction_id = '6ae1ed30cc46b6d5e97cf6b5'
+page = <Page url='http://localhost:5173/auction/item/6ae1f07acc46b6d5e97cfcd6'>
+auction_id = '6ae1f07acc46b6d5e97cfcd6'
 
     def test_bid_below_minimum_shows_inline_error(page: Page, auction_id):
         bid_input = open_auction_as_bidder(page, auction_id)
@@ -106,7 +106,7 @@ E         - img
 E         - link "Auctions":
 E           - /url: /auctions
 E         - img
-E         - text: E2E Porsche 911 (chromium) 1793191211
+E         - text: E2E Porsche 911 (chromium) 1793192057
 E         - button "Watch this auction":
 E           - img
 E         - button "Share auction":
@@ -114,9 +114,9 @@ E           - img
 E         - text: LIVE AUCTION
 E         - img
 E         - paragraph: Ends in
-E         - paragraph: 23h 59m 46s
-E         - img "E2E Porsche 911 (chromium) 1793191211"
-E         - heading "E2E Porsche 911 (chromium) 1793191211" [level=1]
+E         - paragraph: 23h 59m 50s
+E         - img "E2E Porsche 911 (chromium) 1793192057"
+E         - heading "E2E Porsche 911 (chromium) 1793192057" [level=1]
 E         - text: "Condition: New Starting Bid: Rs. 1,000 0"
 E         - img
 E         - text: 0 bids
@@ -150,7 +150,7 @@ e2e\place_bid.py:56: AssertionError
 - Generated html report: file:///E:/Sem5Project/BidBazaar/Testing/reports/report_with_bug.html -
 =========================== short test summary info ===========================
 FAILED e2e/place_bid.py::test_bid_below_minimum_shows_inline_error[chromium]
-====================== 1 failed, 2 deselected in 17.94s =======================
+====================== 1 failed, 2 deselected in 14.02s =======================
 
 ================================================================
   STEP 3  Removing the bug (AuctionItem.jsx restored)
@@ -165,7 +165,7 @@ collecting ... collected 3 items / 2 deselected / 1 selected
 e2e/place_bid.py::test_bid_below_minimum_shows_inline_error[chromium] PASSED [100%]
 
 - Generated html report: file:///E:/Sem5Project/BidBazaar/Testing/reports/report_bug_fixed.html -
-====================== 1 passed, 2 deselected in 14.17s =======================
+====================== 1 passed, 2 deselected in 12.37s =======================
 
 ================================================================
   SUMMARY

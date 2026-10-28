@@ -15,7 +15,7 @@ api/read.py::test_api_read_auction
       Result   : PASS
 
   > real auction -> found
-      Request  : GET /auctionitem/auction/6ae1ef6fcc46b6d5e97cf7a3
+      Request  : GET /auctionitem/auction/6ae1f060cc46b6d5e97cfc80
       Response : 200 OK
       Expected : 200
       Message  : -
@@ -30,4 +30,4 @@ api/read.py::test_api_read_auction
 PASSED
 
 - Generated html report: file:///E:/Sem5Project/BidBazaar/Testing/reports/read.html -
-============================== 1 passed in 2.76s ==============================
+============================== 1 passed in 1.48s ==============================

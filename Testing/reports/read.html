@@ -541,12 +541,30 @@ p.filter { color: var(--muted); }
 }
 .logwrapper .logexpander { color: #e5e7eb; }
 
+/* big screenshot viewer under the row instead of a 320px thumbnail */
+div.media {
+  float: none;
+  width: auto;
+  max-width: 900px;
+  height: auto;
+  margin: 10px auto 0;
+  overflow: visible;
+}
+.media-container { height: auto; grid-template-columns: 36px auto 36px; }
+.media-container__viewport img { object-fit: contain; max-height: none; width: 100%; height: auto; }
+.media__name { font-size: 15px; margin-top: 8px; }
+
+/* passed tests have no useful log (output goes to the terminal) */
+tbody.passed .logwrapper { display: none; }
+.logwrapper { background: transparent; max-height: 320px; margin-top: 10px; }
+.logwrapper .log { top: 0; }
+
       </style>
     
   </head>
   <body>
     <h1 id="title">BidBazaar Test Report: Read</h1>
-    <p>Report generated on 28-Oct-2026 at 17:49:51 by <a href="https://pypi.python.org/pypi/pytest-html">pytest-html</a>
+    <p>Report generated on 28-Oct-2026 at 17:53:52 by <a href="https://pypi.python.org/pypi/pytest-html">pytest-html</a>
         v4.2.0</p>
     <div id="environment-header">
       <h2>Environment</h2>
@@ -601,7 +619,7 @@ p.filter { color: var(--muted); }
         <h2>Summary</h2>
         <div class="additional-summary prefix">
         </div>
-        <p class="run-count">1 test took 00:00:03.</p>
+        <p class="run-count">1 test took 00:00:01.</p>
         <p class="filter">(Un)check the boxes to filter the results.</p>
         <div class="summary__reload">
           <div class="summary__reload__button hidden" onclick="location.reload()">
@@ -650,7 +668,7 @@ p.filter { color: var(--muted); }
       </thead>
     </table>
   <footer>
-    <div id="data-container" data-jsonblob="{&#34;environment&#34;: {&#34;Python&#34;: &#34;3.12.1&#34;, &#34;Platform&#34;: &#34;Windows-11-10.0.26300-SP0&#34;, &#34;Browser&#34;: &#34;Chromium&#34;, &#34;Frontend&#34;: &#34;http://localhost:5173&#34;, &#34;Backend API&#34;: &#34;http://localhost:5000/api/v1&#34;, &#34;Tool&#34;: &#34;Playwright (Python) + pytest&#34;}, &#34;tests&#34;: {&#34;api/read.py::test_api_read_auction&#34;: [{&#34;extras&#34;: [{&#34;name&#34;: null, &#34;format_type&#34;: &#34;html&#34;, &#34;content&#34;: &#34;&lt;table class=&#39;api-calls&#39;&gt;&lt;tr&gt;&lt;th&gt;Case&lt;/th&gt;&lt;th&gt;Request&lt;/th&gt;&lt;th&gt;Response&lt;/th&gt;&lt;th&gt;Expected&lt;/th&gt;&lt;th&gt;Message&lt;/th&gt;&lt;th&gt;Result&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;(setup) create an auction to work on&lt;/td&gt;&lt;td&gt;&lt;code&gt;POST /auctionitem/create&lt;/code&gt;&lt;/td&gt;&lt;td&gt;201 Created&lt;/td&gt;&lt;td&gt;201&lt;/td&gt;&lt;td&gt;Auction item created and will be listed on auction page a...&lt;/td&gt;&lt;td class=&#39;ok&#39;&gt;PASS&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;real auction -&amp;gt; found&lt;/td&gt;&lt;td&gt;&lt;code&gt;GET /auctionitem/auction/6ae1ef6fcc46b6d5e97cf7a3&lt;/code&gt;&lt;/td&gt;&lt;td&gt;200 OK&lt;/td&gt;&lt;td&gt;200&lt;/td&gt;&lt;td&gt;-&lt;/td&gt;&lt;td class=&#39;ok&#39;&gt;PASS&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;missing auction -&amp;gt; not found&lt;/td&gt;&lt;td&gt;&lt;code&gt;GET /auctionitem/auction/64b000000000000000000000&lt;/code&gt;&lt;/td&gt;&lt;td&gt;404 Not Found&lt;/td&gt;&lt;td&gt;404&lt;/td&gt;&lt;td&gt;Auction not found.&lt;/td&gt;&lt;td class=&#39;ok&#39;&gt;PASS&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&#34;, &#34;mime_type&#34;: null, &#34;extension&#34;: null}], &#34;result&#34;: &#34;Passed&#34;, &#34;testcase&#34;: &#34;&lt;b&gt;TC-A2&lt;/b&gt;&amp;nbsp; READ  GET /auctionitem/auction/:id&#34;, &#34;testId&#34;: &#34;api/read.py::test_api_read_auction&#34;, &#34;duration&#34;: &#34;00:00:03&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testcase\&#34;&gt;&lt;b&gt;TC-A2&lt;/b&gt;&amp;nbsp; READ  GET /auctionitem/auction/:id&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-type\&#34;&gt;&lt;span class=\&#34;tag tag-api\&#34;&gt;API&lt;/span&gt;&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/read.py::test_api_read_auction&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:03&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}]}, &#34;renderCollapsed&#34;: [&#34;none&#34;], &#34;initialSort&#34;: &#34;result&#34;, &#34;title&#34;: &#34;BidBazaar Test Report: Read&#34;}"></div>
+    <div id="data-container" data-jsonblob="{&#34;environment&#34;: {&#34;Python&#34;: &#34;3.12.1&#34;, &#34;Platform&#34;: &#34;Windows-11-10.0.26300-SP0&#34;, &#34;Browser&#34;: &#34;Chromium&#34;, &#34;Frontend&#34;: &#34;http://localhost:5173&#34;, &#34;Backend API&#34;: &#34;http://localhost:5000/api/v1&#34;, &#34;Tool&#34;: &#34;Playwright (Python) + pytest&#34;}, &#34;tests&#34;: {&#34;api/read.py::test_api_read_auction&#34;: [{&#34;extras&#34;: [{&#34;name&#34;: null, &#34;format_type&#34;: &#34;html&#34;, &#34;content&#34;: &#34;&lt;table class=&#39;api-calls&#39;&gt;&lt;tr&gt;&lt;th&gt;Case&lt;/th&gt;&lt;th&gt;Request&lt;/th&gt;&lt;th&gt;Response&lt;/th&gt;&lt;th&gt;Expected&lt;/th&gt;&lt;th&gt;Message&lt;/th&gt;&lt;th&gt;Result&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;(setup) create an auction to work on&lt;/td&gt;&lt;td&gt;&lt;code&gt;POST /auctionitem/create&lt;/code&gt;&lt;/td&gt;&lt;td&gt;201 Created&lt;/td&gt;&lt;td&gt;201&lt;/td&gt;&lt;td&gt;Auction item created and will be listed on auction page a...&lt;/td&gt;&lt;td class=&#39;ok&#39;&gt;PASS&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;real auction -&amp;gt; found&lt;/td&gt;&lt;td&gt;&lt;code&gt;GET /auctionitem/auction/6ae1f060cc46b6d5e97cfc80&lt;/code&gt;&lt;/td&gt;&lt;td&gt;200 OK&lt;/td&gt;&lt;td&gt;200&lt;/td&gt;&lt;td&gt;-&lt;/td&gt;&lt;td class=&#39;ok&#39;&gt;PASS&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;missing auction -&amp;gt; not found&lt;/td&gt;&lt;td&gt;&lt;code&gt;GET /auctionitem/auction/64b000000000000000000000&lt;/code&gt;&lt;/td&gt;&lt;td&gt;404 Not Found&lt;/td&gt;&lt;td&gt;404&lt;/td&gt;&lt;td&gt;Auction not found.&lt;/td&gt;&lt;td class=&#39;ok&#39;&gt;PASS&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&#34;, &#34;mime_type&#34;: null, &#34;extension&#34;: null}], &#34;result&#34;: &#34;Passed&#34;, &#34;testcase&#34;: &#34;&lt;b&gt;TC-A2&lt;/b&gt;&amp;nbsp; READ  GET /auctionitem/auction/:id&#34;, &#34;testId&#34;: &#34;api/read.py::test_api_read_auction&#34;, &#34;duration&#34;: &#34;00:00:01&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testcase\&#34;&gt;&lt;b&gt;TC-A2&lt;/b&gt;&amp;nbsp; READ  GET /auctionitem/auction/:id&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-type\&#34;&gt;&lt;span class=\&#34;tag tag-api\&#34;&gt;API&lt;/span&gt;&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/read.py::test_api_read_auction&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:01&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}]}, &#34;renderCollapsed&#34;: [&#34;none&#34;], &#34;initialSort&#34;: &#34;result&#34;, &#34;title&#34;: &#34;BidBazaar Test Report: Read&#34;}"></div>
     <script>
       (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 const { getCollapsedCategory, setCollapsedIds } = require('./storage.js')
