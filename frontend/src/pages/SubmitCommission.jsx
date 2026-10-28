@@ -1,5 +1,6 @@
 import { postCommissionProof } from "@/store/slices/commissionSlice";
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Upload,
@@ -42,7 +43,7 @@ const SubmitCommission = () => {
     e.preventDefault();
 
     if (!proof || !amount) {
-      alert("Please provide amount and proof file.");
+      toast.error("Please provide amount and proof file.");
       return;
     }
 

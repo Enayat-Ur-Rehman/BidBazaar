@@ -1,0 +1,9 @@
+============================= test session starts =============================
+collecting ... collected 3 items
+
+e2e/create_auction.py::test_create_auction_with_valid_data_succeeds[chromium] PASSED
+e2e/create_auction.py::test_create_second_auction_while_one_is_active_is_rejected[chromium] PASSED
+e2e/create_auction.py::test_create_auction_blocked_while_commission_is_unpaid[chromium] PASSED
+
+- Generated html report: file:///E:/Sem5Project/BidBazaar/Testing/reports/create_auction.html -
+============================= 3 passed in 14.83s ==============================

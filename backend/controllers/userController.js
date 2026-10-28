@@ -187,6 +187,17 @@ export const getProfile = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
+// Used by CreateAuction.jsx to show the "Unpaid Commission" warning
+// and disable the Create button before the user fills in the form.
+export const getUnpaidCommission = catchAsyncErrors(async (req, res, next) => {
+  const user = await User.findById(req.user._id);
+  res.status(200).json({
+    success: true,
+    unpaidCommission: user.unpaidCommission,
+    status: user.unpaidCommission > 0 ? "pending" : "settled",
+  });
+});
+
 export const logout = catchAsyncErrors(async (req, res, next) => {
   res
     .status(200)

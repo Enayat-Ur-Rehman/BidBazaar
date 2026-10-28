@@ -1,0 +1,33 @@
+============================= test session starts =============================
+collecting ... collected 1 item
+
+api/read.py::test_api_read_auction 
+
+  ================================================================
+  TC-A2  READ  -  GET /auctionitem/auction/:id
+  ================================================================
+
+  > (setup) create an auction to work on
+      Request  : POST /auctionitem/create
+      Response : 201 Created
+      Expected : 201
+      Message  : Auction item created and will be listed on auction page a...
+      Result   : PASS
+
+  > real auction -> found
+      Request  : GET /auctionitem/auction/6ae1ef6fcc46b6d5e97cf7a3
+      Response : 200 OK
+      Expected : 200
+      Message  : -
+      Result   : PASS
+
+  > missing auction -> not found
+      Request  : GET /auctionitem/auction/64b000000000000000000000
+      Response : 404 Not Found
+      Expected : 404
+      Message  : Auction not found.
+      Result   : PASS
+PASSED
+
+- Generated html report: file:///E:/Sem5Project/BidBazaar/Testing/reports/read.html -
+============================== 1 passed in 2.76s ==============================

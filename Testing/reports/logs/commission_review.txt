@@ -1,0 +1,9 @@
+============================= test session starts =============================
+collecting ... collected 3 items
+
+e2e/commission_review.py::test_admin_approves_commission_proof[chromium] PASSED
+e2e/commission_review.py::test_admin_rejects_commission_proof[chromium] PASSED
+e2e/commission_review.py::test_submitting_more_than_owed_commission_is_rejected[chromium] PASSED
+
+- Generated html report: file:///E:/Sem5Project/BidBazaar/Testing/reports/commission_review.html -
+============================= 3 passed in 32.68s ==============================

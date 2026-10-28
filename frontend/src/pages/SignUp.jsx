@@ -2,6 +2,7 @@ import { register } from "@/store/slices/userSlice";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const SignUp = () => {
   const [userName, setUserName] = useState("");
@@ -62,6 +63,7 @@ const SignUp = () => {
         role: !role,
         password: !password,
       });
+      toast.error("Please fill in all personal details and select a role.");
       return;
     }
 
@@ -72,10 +74,12 @@ const SignUp = () => {
       console.log("🏦 Auctioneer mode - validating payment details...");
       if (!bankName || !bankAccountNumber || !bankAccountName) {
         console.warn("⚠️  Bank details incomplete for Auctioneer!");
+        toast.error("Please provide your full bank details.");
         return;
       }
       if (!easypaisaAccountNumber || !paypalEmail) {
         console.warn("⚠️  Easypaisa or PayPal details missing for Auctioneer!");
+        toast.error("Please provide your Easypaisa number and PayPal email.");
         return;
       }
       console.log("✅ Auctioneer payment details complete");

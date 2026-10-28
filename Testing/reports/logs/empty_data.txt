@@ -1,0 +1,14 @@
+============================= test session starts =============================
+collecting ... collected 1 item
+
+mocking/empty_data.py::test_auctions_page_with_empty_data[chromium] 
+  > intercepted : GET http://localhost:5000/api/v1/auctionitem/allitems
+      fake reply : 200 OK  {"success": true, "items": []}
+
+  > intercepted : GET http://localhost:5000/api/v1/auctionitem/allitems
+      fake reply : 200 OK  {"success": true, "items": []}
+      page shows : "No auctions found"  -> PASS
+PASSED
+
+- Generated html report: file:///E:/Sem5Project/BidBazaar/Testing/reports/empty_data.html -
+============================== 1 passed in 3.82s ==============================

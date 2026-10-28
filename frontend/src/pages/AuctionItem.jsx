@@ -7,6 +7,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import Spinner from "@/custom-components/Spinner";
 import { getAuctionDetail } from "@/store/slices/auctionSlice";
 import { placeBid } from "@/store/slices/bidSlice";
+import { toast } from "react-toastify";
 
 const AuctionItem = () => {
   const { id } = useParams();
@@ -27,6 +28,14 @@ const AuctionItem = () => {
   const [isWatching, setIsWatching] = useState(false);
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [quickBidAmounts, setQuickBidAmounts] = useState([]);
+
+  // Also pop up the bid error once the user stops typing (not on every
+  // keystroke, so typing "1500" doesn't flash "too low" at the "1").
+  useEffect(() => {
+    if (!bidError) return;
+    const timer = setTimeout(() => toast.error(bidError, { toastId: "bid-error" }), 800);
+    return () => clearTimeout(timer);
+  }, [bidError, amount]);
 
   // Calculate auction status
   const auctionStatus = useMemo(() => {

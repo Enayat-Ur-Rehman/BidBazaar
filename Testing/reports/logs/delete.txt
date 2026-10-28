@@ -1,0 +1,33 @@
+============================= test session starts =============================
+collecting ... collected 1 item
+
+api/delete.py::test_api_delete_auction 
+
+  ================================================================
+  TC-A4  DELETE  -  DELETE /auctionitem/delete/:id
+  ================================================================
+
+  > (setup) create an auction to work on
+      Request  : POST /auctionitem/create
+      Response : 201 Created
+      Expected : 201
+      Message  : Auction item created and will be listed on auction page a...
+      Result   : PASS
+
+  > real auction -> deleted
+      Request  : DELETE /auctionitem/delete/6ae1ecbfcc46b6d5e97cf5d1
+      Response : 200 OK
+      Expected : 200
+      Message  : Auction item deleted successfully.
+      Result   : PASS
+
+  > same auction again -> already gone
+      Request  : DELETE /auctionitem/delete/6ae1ecbfcc46b6d5e97cf5d1
+      Response : 404 Not Found
+      Expected : 404
+      Message  : Auction not found.
+      Result   : PASS
+PASSED
+
+- Generated html report: file:///E:/Sem5Project/BidBazaar/Testing/reports/delete.html -
+============================== 1 passed in 1.29s ==============================

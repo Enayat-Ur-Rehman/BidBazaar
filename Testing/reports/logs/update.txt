@@ -1,0 +1,33 @@
+============================= test session starts =============================
+collecting ... collected 1 item
+
+api/update.py::test_api_update_payment_proof_status 
+
+  ================================================================
+  TC-A3  UPDATE  -  PUT /superadmin/paymentproof/status/update/:id
+  ================================================================
+
+  > (setup) submit a commission proof
+      Request  : POST /commission/proof
+      Response : 201 Created
+      Expected : 201
+      Message  : Your proof has been submitted successfully. We will revie...
+      Result   : PASS
+
+  > real proof -> status updated
+      Request  : PUT /superadmin/paymentproof/status/update/6ae1ecbccc46b6d5e97cf5b5
+      Response : 200 OK
+      Expected : 200
+      Message  : Payment proof amount and status updated.
+      Result   : PASS
+
+  > missing proof -> not found
+      Request  : PUT /superadmin/paymentproof/status/update/64b000000000000000000000
+      Response : 404 Not Found
+      Expected : 404
+      Message  : Payment proof not found.
+      Result   : PASS
+PASSED
+
+- Generated html report: file:///E:/Sem5Project/BidBazaar/Testing/reports/update.html -
+============================== 1 passed in 2.39s ==============================

@@ -1,0 +1,175 @@
+
+================================================================
+  STEP 1  Inserting the bug into AuctionItem.jsx
+================================================================
+  before: if (numAmount < minBid) {
+  after : if (numAmount < minBid - 1) { // DELIBERATE BUG (bug_demo.py): off-by-one
+
+================================================================
+  STEP 2  Running TC-B1 WITH the bug  (expected: FAILED)
+================================================================
+============================= test session starts =============================
+collecting ... collected 3 items / 2 deselected / 1 selected
+
+e2e/place_bid.py::test_bid_below_minimum_shows_inline_error[chromium] FAILED [100%]
+
+================================== FAILURES ===================================
+_____________ test_bid_below_minimum_shows_inline_error[chromium] _____________
+
+page = <Page url='http://localhost:5173/auction/item/6ae1ed30cc46b6d5e97cf6b5'>
+auction_id = '6ae1ed30cc46b6d5e97cf6b5'
+
+    def test_bid_below_minimum_shows_inline_error(page: Page, auction_id):
+        bid_input = open_auction_as_bidder(page, auction_id)
+        bid_input.fill(str(STARTING_BID - 1))  # boundary: one rupee under the minimum
+    
+>       expect(page.get_by_text("Minimum bid is Rs.").first).to_be_visible()
+E       AssertionError: Locator expected to be visible
+E       Actual value: None
+E       Error: element(s) not found 
+E       Call log:
+E         - Expect "to_be_visible" get_by_text("Minimum bid is Rs.").first with timeout 5000ms
+E         - waiting for get_by_text("Minimum bid is Rs.").first
+E       
+E       Aria snapshot:
+E       - link "BidBazaar":
+E         - /url: /
+E         - heading "BidBazaar" [level=4]
+E       - navigation:
+E         - list:
+E           - listitem:
+E             - link "Auctions":
+E               - /url: /auctions
+E               - img
+E               - text: Auctions
+E           - listitem:
+E             - link "Leaderboard":
+E               - /url: /leaderboard
+E               - img
+E               - text: Leaderboard
+E           - listitem:
+E             - link "My Bids":
+E               - /url: /bidder/myBids
+E               - img
+E               - text: My Bids
+E           - listitem:
+E             - link "My Payments":
+E               - /url: /bidder/myPayments
+E               - img
+E               - text: My Payments
+E           - listitem:
+E             - link "Dashboard":
+E               - /url: /bidder/dashboard
+E               - img
+E               - text: Dashboard
+E       - button "Logout"
+E       - navigation:
+E         - list:
+E           - listitem:
+E             - link "Profile":
+E               - /url: /me
+E               - img
+E               - text: Profile
+E           - listitem:
+E             - link "How it works":
+E               - /url: /how-it-works-info
+E               - img
+E               - text: How it works
+E           - listitem:
+E             - link "About Us":
+E               - /url: /about
+E               - img
+E               - text: About Us
+E       - link "Facebook":
+E         - /url: /
+E         - img
+E       - link "Instagram":
+E         - /url: /
+E         - img
+E       - link "Contact Us →":
+E         - /url: /contact
+E       - paragraph: © BidBazaar, LLC.
+E       - banner:
+E         - button "Toggle sidebar":
+E           - img
+E         - heading "BidBazaar" [level=1]
+E         - paragraph: Online Auction Platform - Bidder Dashboard
+E         - button "Notifications":
+E           - img
+E         - button "A":
+E           - text: A
+E           - img
+E       - main:
+E         - link "Home":
+E           - /url: /
+E         - img
+E         - link "Auctions":
+E           - /url: /auctions
+E         - img
+E         - text: E2E Porsche 911 (chromium) 1793191211
+E         - button "Watch this auction":
+E           - img
+E         - button "Share auction":
+E           - img
+E         - text: LIVE AUCTION
+E         - img
+E         - paragraph: Ends in
+E         - paragraph: 23h 59m 46s
+E         - img "E2E Porsche 911 (chromium) 1793191211"
+E         - heading "E2E Porsche 911 (chromium) 1793191211" [level=1]
+E         - text: "Condition: New Starting Bid: Rs. 1,000 0"
+E         - img
+E         - text: 0 bids
+E         - img
+E         - heading "Item Description" [level=2]
+E         - list:
+E           - listitem: • Seeded by the automated test suite.
+E         - img
+E         - heading "Live Bidding" [level=2]
+E         - paragraph: 0 active bidders
+E         - img
+E         - paragraph: No bids yet
+E         - paragraph: Be the first to place a bid!
+E         - paragraph: Quick Bid
+E         - button "+0k"
+E         - button "+0k"
+E         - button "+0k"
+E         - spinbutton "Enter custom amount": "999"
+E         - button "Bid":
+E           - img
+E           - text: Bid
+E         - paragraph: "Minimum: Rs. 1,000"
+E         - img
+E         - paragraph: Bidding Tips
+E         - list:
+E           - listitem: • Set a maximum bid limit before starting
+E           - listitem: • Bid in the last few minutes for best chances
+E           - listitem: • Watch multiple items to compare prices
+
+e2e\place_bid.py:56: AssertionError
+- Generated html report: file:///E:/Sem5Project/BidBazaar/Testing/reports/report_with_bug.html -
+=========================== short test summary info ===========================
+FAILED e2e/place_bid.py::test_bid_below_minimum_shows_inline_error[chromium]
+====================== 1 failed, 2 deselected in 17.94s =======================
+
+================================================================
+  STEP 3  Removing the bug (AuctionItem.jsx restored)
+================================================================
+
+================================================================
+  STEP 4  Running TC-B1 WITHOUT the bug  (expected: PASSED)
+================================================================
+============================= test session starts =============================
+collecting ... collected 3 items / 2 deselected / 1 selected
+
+e2e/place_bid.py::test_bid_below_minimum_shows_inline_error[chromium] PASSED [100%]
+
+- Generated html report: file:///E:/Sem5Project/BidBazaar/Testing/reports/report_bug_fixed.html -
+====================== 1 passed, 2 deselected in 14.17s =======================
+
+================================================================
+  SUMMARY
+================================================================
+  with the bug    : FAILED  (bug caught by the test)
+  without the bug : PASSED
+  reports         : reports/report_with_bug.html, reports/report_bug_fixed.html

@@ -62,7 +62,7 @@ export const initiateAuctionPayment = async (auctionId) => {
       bidder: highestBidder.bidder.id._id,
       bidAmount: auction.currentBid,
       paymentAmount,
-      status: "Pending",
+      paymentStatus: "Pending",
       expiresAt: expiryTime,
       bidderSequence: 0,
       reason: "Win confirmation",
@@ -76,7 +76,7 @@ export const initiateAuctionPayment = async (auctionId) => {
       $push: {
         paymentHistory: {
           bidderId: highestBidder.bidder.id._id,
-          status: "Pending",
+          Status: "Pending",
           expiresAt: expiryTime,
           bidderSequenceOrder: 0,
         },
@@ -167,9 +167,9 @@ export const handlePaymentExpiry = async (auctionId) => {
       {
         auctionItem: auctionId,
         bidder: auction.currentPaymentBidderId,
-        status: "Pending",
+        paymentStatus: "Pending",
       },
-      { status: "Expired" }
+      { paymentStatus: "Expired" }
     );
 
     // Notify expired bidder
@@ -190,7 +190,7 @@ export const handlePaymentExpiry = async (auctionId) => {
         bidder: nextBidder.bidder.id._id,
         bidAmount: auction.currentBid,
         paymentAmount: newPaymentAmount,
-        status: "Pending",
+        paymentStatus: "Pending",
         expiresAt: newExpiryTime,
         bidderSequence: currentPaymentIndex + 1,
         reason: "Fallback - previous bidder expired",
@@ -201,7 +201,7 @@ export const handlePaymentExpiry = async (auctionId) => {
         $push: {
           paymentHistory: {
             bidderId: nextBidder.bidder.id._id,
-            status: "Pending",
+            Status: "Pending",
             expiresAt: newExpiryTime,
             bidderSequenceOrder: currentPaymentIndex + 1,
           },
@@ -243,7 +243,7 @@ export const confirmPaymentSuccess = async (paymentId) => {
     const payment = await Payment.findByIdAndUpdate(
       paymentId,
       {
-        status: "Paid",
+        paymentStatus: "Paid",
         paidAt: new Date(),
         updatedAt: new Date(),
       },

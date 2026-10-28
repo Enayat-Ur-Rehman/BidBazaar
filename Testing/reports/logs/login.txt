@@ -1,0 +1,9 @@
+============================= test session starts =============================
+collecting ... collected 3 items
+
+e2e/login.py::test_login_with_valid_credentials_redirects_bidder_to_auctions[chromium] PASSED
+e2e/login.py::test_login_with_wrong_password_is_rejected[chromium] PASSED
+e2e/login.py::test_login_with_unregistered_email_is_rejected[chromium] PASSED
+
+- Generated html report: file:///E:/Sem5Project/BidBazaar/Testing/reports/login.html -
+============================= 3 passed in 11.04s ==============================

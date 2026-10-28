@@ -85,6 +85,15 @@ export const Drawer = ({ setOpenDrawer, openDrawer }) => {
   const [amount, setAmount] = useState(singlePaymentProof.amount || "");
   const [status, setStatus] = useState(singlePaymentProof.status || "");
 
+  // The Drawer stays mounted across row selections (it's never
+  // unmounted, just hidden), so without this the Amount/Status fields
+  // keep showing whichever proof was opened first instead of the one
+  // currently selected.
+  useEffect(() => {
+    setAmount(singlePaymentProof.amount || "");
+    setStatus(singlePaymentProof.status || "");
+  }, [singlePaymentProof]);
+
   const dispatch = useDispatch();
   const handlePaymentProofUpdate = () => {
     dispatch(updatePaymentProof(singlePaymentProof._id, status, amount));

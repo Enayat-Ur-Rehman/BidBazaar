@@ -1,0 +1,26 @@
+============================= test session starts =============================
+collecting ... collected 1 item
+
+api/create.py::test_api_create_auction 
+
+  ================================================================
+  TC-A1  CREATE  -  POST /auctionitem/create
+  ================================================================
+
+  > valid auction -> created
+      Request  : POST /auctionitem/create
+      Response : 201 Created
+      Expected : 201
+      Message  : Auction item created and will be listed on auction page a...
+      Result   : PASS
+
+  > no image -> rejected
+      Request  : POST /auctionitem/create
+      Response : 400 Bad Request
+      Expected : 400
+      Message  : Auction item image required.
+      Result   : PASS
+PASSED
+
+- Generated html report: file:///E:/Sem5Project/BidBazaar/Testing/reports/create.html -
+============================== 1 passed in 2.26s ==============================

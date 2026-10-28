@@ -1,0 +1,9 @@
+============================= test session starts =============================
+collecting ... collected 3 items
+
+e2e/payment.py::test_payment_with_valid_test_card_succeeds[chromium] PASSED
+e2e/payment.py::test_payment_with_declined_card_is_rejected[chromium] PASSED
+e2e/payment.py::test_expired_payment_cannot_be_paid[chromium] PASSED
+
+- Generated html report: file:///E:/Sem5Project/BidBazaar/Testing/reports/payment.html -
+============================= 3 passed in 40.27s ==============================

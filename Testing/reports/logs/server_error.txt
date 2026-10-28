@@ -1,0 +1,14 @@
+============================= test session starts =============================
+collecting ... collected 1 item
+
+mocking/server_error.py::test_auctions_page_when_server_errors[chromium] 
+  > intercepted : GET http://localhost:5000/api/v1/auctionitem/allitems
+      fake reply : 500 Internal Server Error
+
+  > intercepted : GET http://localhost:5000/api/v1/auctionitem/allitems
+      fake reply : 500 Internal Server Error
+      page shows : heading + "No auctions found", no JS errors  -> PASS
+PASSED
+
+- Generated html report: file:///E:/Sem5Project/BidBazaar/Testing/reports/server_error.html -
+============================== 1 passed in 3.80s ==============================
