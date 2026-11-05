@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { API_BASE } from "../../lib/apiBase";
 import { toast } from "react-toastify";
 
 const userSlice = createSlice({
@@ -99,7 +100,7 @@ export const register = (data) => async (dispatch) => {
   try {
     console.log("📤 Sending register request with FormData...");
     const response = await axios.post(
-      "http://localhost:5000/api/v1/user/register",
+      `${API_BASE}/api/v1/user/register`,
       data,
       {
         withCredentials: true,
@@ -126,7 +127,7 @@ export const login = (data) => async (dispatch) => {
   try {
     console.log("🔐 Sending login request...");
     const response = await axios.post(
-      "http://localhost:5000/api/v1/user/login",
+      `${API_BASE}/api/v1/user/login`,
       data,
       {
         withCredentials: true,
@@ -152,7 +153,7 @@ export const login = (data) => async (dispatch) => {
 export const logout = () => async (dispatch) => {
   try {
     const response = await axios.get(
-      "http://localhost:5000/api/v1/user/logout",
+      `${API_BASE}/api/v1/user/logout`,
       { withCredentials: true }
     );
     dispatch(userSlice.actions.logoutSuccess());
@@ -168,7 +169,7 @@ export const logout = () => async (dispatch) => {
 export const fetchUser = () => async (dispatch) => {
   dispatch(userSlice.actions.fetchUserRequest());
   try {
-    const response = await axios.get("http://localhost:5000/api/v1/user/me", {
+    const response = await axios.get(`${API_BASE}/api/v1/user/me`, {
       withCredentials: true,
     });
     console.log("✅ User fetched successfully:", response.data.user);
@@ -190,7 +191,7 @@ export const fetchLeaderboard = () => async (dispatch) => {
   dispatch(userSlice.actions.fetchLeaderboardRequest());
   try {
     const response = await axios.get(
-      "http://localhost:5000/api/v1/user/leaderboard",
+      `${API_BASE}/api/v1/user/leaderboard`,
       {
         withCredentials: true,
       }

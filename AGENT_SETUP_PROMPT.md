@@ -20,12 +20,12 @@ Follow it in order:
 3. **Install (section 4):** install backend, frontend and Testing dependencies, including Playwright's browsers.
    - If node_modules folders came from the zip, delete and reinstall them.
 4. **Test accounts (section 5):** run `node seedTestAccounts.js` in backend/.
-5. **Start the app (section 6):** start the backend (npm start) and the frontend (npm run dev) as long-running background processes.
+5. **Start the app (section 6):** start the backend (npm run dev) and the frontend (npm run dev) as long-running background processes.
    - Confirm "Connected to database." in the backend log and that http://localhost:5173 responds.
 6. **Smoke test (section 7):** in Testing/, run the four API files: api/create.py, api/read.py, api/update.py and api/delete.py.
    - Run each one with `python <file> --headless`.
    - Then run e2e/login.py with `python e2e/login.py chromium --headless`.
-   - If these pass, run the full suite with `pytest`. It takes about 7 minutes and should show 64 passed.
+   - If these pass, run the full suite with `pytest`. It takes about 6 minutes and should show 55 passed.
 
 Rules:
 - Never run two test commands at the same time. All tests share the same database accounts, so parallel runs cause false failures.
@@ -34,7 +34,7 @@ Rules:
   - Check the troubleshooting table in section 8 first.
   - If it's an environment problem (keys, ports, accounts, an interrupted run), fix it and re-run only that file.
   - Report any other failure to me with the error message. Don't patch it.
-- Don't run `python bug_demo.py` unless I ask. It edits frontend/src/pages/AuctionItem.jsx on purpose (and restores it).
+- Don't run `python bug_demo.py` unless I ask. It inserts two deliberate bugs on purpose (in AuctionItem.jsx, PaymentCheckout.jsx and paymentContoller.js) and restores the files afterwards.
 
 When you're done, give me a short summary:
 - what you installed or changed

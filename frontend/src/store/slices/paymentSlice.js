@@ -1,8 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { API_BASE } from "../../lib/apiBase";
 import { toast } from "react-toastify";
 
-const API_URL = "http://localhost:5000/api/v1/payment";
+const API_URL = `${API_BASE}/api/v1/payment`;
 
 const paymentSlice = createSlice({
   name: "payment",

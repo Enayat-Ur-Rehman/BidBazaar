@@ -1,8 +1,10 @@
 """
-API TEST 3 — UPDATE   PUT /superadmin/paymentproof/status/update/:id   (Super Admin)
+API TEST 3: UPDATE   (PUT /superadmin/paymentproof/status/update/:id, Super Admin only)
 
-  TC-A3  real commission proof -> status set to Rejected  -> 200 OK
-         id that matches no proof                         -> 404 "Payment proof not found."
+No browser. We send requests straight to the backend and check its answer.
+
+  TC-A3  change a real commission proof's status to "Rejected"  -> 200 OK
+         id that does not exist                                 -> 404 "Payment proof not found."
 """
 import sys
 from pathlib import Path
@@ -22,22 +24,26 @@ def test_api_update_payment_proof_status(auctioneer_api: APIRequestContext, admi
     set_unpaid_commission(AUCTIONEER["email"], 1000)  # a proof can only be submitted while commission is owed
     proof_id = None
     try:
+        # Setup: the Auctioneer uploads a payment proof (amount + screenshot).
         r = auctioneer_api.post(f"{BACKEND_API}/commission/proof", multipart={
             "amount": "500", "comment": f"API update test {int(time.time())}",
             "proof": {"name": WATCH_IMAGE.name, "mimeType": "image/jpeg", "buffer": WATCH_IMAGE.read_bytes()},
         })
         proof_id = check("POST", r, 201, "(setup) submit a commission proof")["commissionProof"]["_id"]
 
+        # Step 1: the Admin updates its status to "Rejected" -> 200.
         r = admin_api.put(f"{BACKEND_API}/superadmin/paymentproof/status/update/{proof_id}",
                           data={"status": "Rejected", "amount": 500})
         body = check("PUT", r, 200, "real proof -> status updated")
         assert body["proof"]["status"] == "Rejected"
 
+        # Step 2: the Admin updates an id that does not exist -> 404.
         r = admin_api.put(f"{BACKEND_API}/superadmin/paymentproof/status/update/{MISSING_ID}",
                           data={"status": "Rejected", "amount": 500})
         body = check("PUT", r, 404, "missing proof -> not found")
         assert body["message"] == "Payment proof not found."
     finally:
+        # Cleanup: always delete the proof, even if a check failed.
         if proof_id:
             admin_api.delete(f"{BACKEND_API}/superadmin/paymentproof/delete/{proof_id}")
 

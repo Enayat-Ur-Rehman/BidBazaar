@@ -1,0 +1,140 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.1, pytest-9.1.1, pluggy-1.7.0 -- C:\Users\Hp\AppData\Local\Programs\Python\Python312\python.exe
+metadata: {'Python': '3.12.1', 'Platform': 'Windows-11-10.0.26300-SP0', 'Browser': 'Chromium, Firefox, Webkit', 'Frontend': 'http://localhost:5173', 'Backend API': 'http://localhost:5000/api/v1', 'Tool': 'Playwright (Python) + pytest'}
+rootdir: E:\Sem5Project\BidBazaar\Testing
+configfile: pytest.ini
+testpaths: e2e, api, mocking
+plugins: anyio-4.12.1, langsmith-0.7.1, html-4.2.0, metadata-3.1.1, playwright-0.10.0
+collecting ... collected 55 items
+
+e2e/create_auction.py::test_create_auction_with_valid_data_succeeds[chromium] PASSED [  1%]
+e2e/create_auction.py::test_create_second_auction_while_one_is_active_is_rejected[chromium] PASSED [  3%]
+e2e/create_auction.py::test_create_auction_blocked_while_commission_is_unpaid[chromium] PASSED [  5%]
+e2e/login.py::test_login_with_valid_credentials_redirects_bidder_to_auctions[chromium] PASSED [  7%]
+e2e/login.py::test_login_with_wrong_password_is_rejected[chromium] PASSED [  9%]
+e2e/login.py::test_login_with_unregistered_email_is_rejected[chromium] PASSED [ 10%]
+e2e/payment.py::test_payment_with_valid_test_card_succeeds[chromium] PASSED [ 12%]
+e2e/payment.py::test_payment_with_declined_card_is_rejected[chromium] PASSED [ 14%]
+e2e/payment.py::test_expired_payment_cannot_be_paid[chromium] PASSED     [ 16%]
+e2e/place_bid.py::test_bid_below_minimum_shows_inline_error[chromium] PASSED [ 18%]
+e2e/place_bid.py::test_valid_bid_is_accepted_and_shown_as_current_bid[chromium] PASSED [ 20%]
+e2e/place_bid.py::test_rebid_by_same_bidder_updates_existing_bid_not_a_new_one[chromium] PASSED [ 21%]
+e2e/register.py::test_register_new_bidder_succeeds[chromium] PASSED      [ 23%]
+e2e/register.py::test_register_with_existing_email_is_rejected[chromium] PASSED [ 25%]
+e2e/register.py::test_register_auctioneer_without_bank_details_is_blocked[chromium] PASSED [ 27%]
+mocking/empty_data.py::test_auctions_page_with_empty_data[chromium] PASSED [ 29%]
+mocking/server_error.py::test_auctions_page_when_server_errors[chromium] PASSED [ 30%]
+e2e/create_auction.py::test_create_auction_with_valid_data_succeeds[firefox] PASSED [ 32%]
+e2e/create_auction.py::test_create_second_auction_while_one_is_active_is_rejected[firefox] PASSED [ 34%]
+e2e/create_auction.py::test_create_auction_blocked_while_commission_is_unpaid[firefox] ERROR [ 36%]
+e2e/login.py::test_login_with_valid_credentials_redirects_bidder_to_auctions[firefox] PASSED [ 38%]
+e2e/login.py::test_login_with_wrong_password_is_rejected[firefox] PASSED [ 40%]
+e2e/login.py::test_login_with_unregistered_email_is_rejected[firefox] PASSED [ 41%]
+e2e/payment.py::test_payment_with_valid_test_card_succeeds[firefox] PASSED [ 43%]
+e2e/payment.py::test_payment_with_declined_card_is_rejected[firefox] PASSED [ 45%]
+e2e/payment.py::test_expired_payment_cannot_be_paid[firefox] PASSED      [ 47%]
+e2e/place_bid.py::test_bid_below_minimum_shows_inline_error[firefox] PASSED [ 49%]
+e2e/place_bid.py::test_valid_bid_is_accepted_and_shown_as_current_bid[firefox] PASSED [ 50%]
+e2e/place_bid.py::test_rebid_by_same_bidder_updates_existing_bid_not_a_new_one[firefox] PASSED [ 52%]
+e2e/register.py::test_register_new_bidder_succeeds[firefox] PASSED       [ 54%]
+e2e/register.py::test_register_with_existing_email_is_rejected[firefox] PASSED [ 56%]
+e2e/register.py::test_register_auctioneer_without_bank_details_is_blocked[firefox] PASSED [ 58%]
+mocking/empty_data.py::test_auctions_page_with_empty_data[firefox] PASSED [ 60%]
+mocking/server_error.py::test_auctions_page_when_server_errors[firefox] PASSED [ 61%]
+e2e/create_auction.py::test_create_auction_with_valid_data_succeeds[webkit] PASSED [ 63%]
+e2e/create_auction.py::test_create_second_auction_while_one_is_active_is_rejected[webkit] PASSED [ 65%]
+e2e/create_auction.py::test_create_auction_blocked_while_commission_is_unpaid[webkit] PASSED [ 67%]
+e2e/login.py::test_login_with_valid_credentials_redirects_bidder_to_auctions[webkit] PASSED [ 69%]
+e2e/login.py::test_login_with_wrong_password_is_rejected[webkit] PASSED  [ 70%]
+e2e/login.py::test_login_with_unregistered_email_is_rejected[webkit] PASSED [ 72%]
+e2e/payment.py::test_payment_with_valid_test_card_succeeds[webkit] PASSED [ 74%]
+e2e/payment.py::test_payment_with_declined_card_is_rejected[webkit] PASSED [ 76%]
+e2e/payment.py::test_expired_payment_cannot_be_paid[webkit] PASSED       [ 78%]
+e2e/place_bid.py::test_bid_below_minimum_shows_inline_error[webkit] PASSED [ 80%]
+e2e/place_bid.py::test_valid_bid_is_accepted_and_shown_as_current_bid[webkit] FAILED [ 81%]
+e2e/place_bid.py::test_rebid_by_same_bidder_updates_existing_bid_not_a_new_one[webkit] PASSED [ 83%]
+e2e/register.py::test_register_new_bidder_succeeds[webkit] PASSED        [ 85%]
+e2e/register.py::test_register_with_existing_email_is_rejected[webkit] PASSED [ 87%]
+e2e/register.py::test_register_auctioneer_without_bank_details_is_blocked[webkit] PASSED [ 89%]
+mocking/empty_data.py::test_auctions_page_with_empty_data[webkit] PASSED [ 90%]
+mocking/server_error.py::test_auctions_page_when_server_errors[webkit] PASSED [ 92%]
+api/create.py::test_api_create_auction PASSED                            [ 94%]
+api/delete.py::test_api_delete_auction PASSED                            [ 96%]
+api/read.py::test_api_read_auction PASSED                                [ 98%]
+api/update.py::test_api_update_payment_proof_status PASSED               [100%]
+
+=================================== ERRORS ====================================
+_ ERROR at setup of test_create_auction_blocked_while_commission_is_unpaid[firefox] _
+
+page = <Page url='http://localhost:5173/login'>
+
+    @pytest.fixture
+    def auctioneer_page(page: Page):
+        set_unpaid_commission(AUCTIONEER["email"], 0)
+>       login_via_ui(page, AUCTIONEER["email"], AUCTIONEER["password"], "**/view-my-auctions")
+
+e2e\create_auction.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+helpers.py:64: in login_via_ui
+    page.wait_for_url(redirect_url_pattern, timeout=15_000, wait_until="domcontentloaded")
+C:\Users\Hp\AppData\Local\Programs\Python\Python312\Lib\site-packages\playwright\sync_api\_generated.py:10057: in wait_for_url
+    self._sync(
+C:\Users\Hp\AppData\Local\Programs\Python\Python312\Lib\site-packages\playwright\_impl\_page.py:590: in wait_for_url
+    return await self._main_frame.wait_for_url(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\Hp\AppData\Local\Programs\Python\Python312\Lib\site-packages\playwright\_impl\_frame.py:289: in wait_for_url
+    async with self.expect_navigation(
+C:\Users\Hp\AppData\Local\Programs\Python\Python312\Lib\site-packages\playwright\_impl\_event_context_manager.py:33: in __aexit__
+    await self._future
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    async def continuation() -> Optional[Response]:
+>       event = await waiter.result()
+                ^^^^^^^^^^^^^^^^^^^^^
+E       playwright._impl._errors.TimeoutError: Timeout 15000ms exceeded.
+E       =========================== logs ===========================
+E       waiting for navigation to "**/view-my-auctions" until 'domcontentloaded'
+E       ============================================================
+
+C:\Users\Hp\AppData\Local\Programs\Python\Python312\Lib\site-packages\playwright\_impl\_frame.py:265: TimeoutError
+================================== FAILURES ===================================
+_________ test_valid_bid_is_accepted_and_shown_as_current_bid[webkit] _________
+
+page = <Page url='http://localhost:5173/login'>
+auction_id = '6ae3840bacbf4e81c37397d1'
+
+    def test_valid_bid_is_accepted_and_shown_as_current_bid(page: Page, auction_id):
+>       bid_input = open_auction_as_bidder(page, auction_id)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+e2e\place_bid.py:64: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+e2e\place_bid.py:45: in open_auction_as_bidder
+    login_via_ui(page, BIDDER["email"], BIDDER["password"], "**/auctions")
+helpers.py:64: in login_via_ui
+    page.wait_for_url(redirect_url_pattern, timeout=15_000, wait_until="domcontentloaded")
+C:\Users\Hp\AppData\Local\Programs\Python\Python312\Lib\site-packages\playwright\sync_api\_generated.py:10057: in wait_for_url
+    self._sync(
+C:\Users\Hp\AppData\Local\Programs\Python\Python312\Lib\site-packages\playwright\_impl\_page.py:590: in wait_for_url
+    return await self._main_frame.wait_for_url(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\Hp\AppData\Local\Programs\Python\Python312\Lib\site-packages\playwright\_impl\_frame.py:289: in wait_for_url
+    async with self.expect_navigation(
+C:\Users\Hp\AppData\Local\Programs\Python\Python312\Lib\site-packages\playwright\_impl\_event_context_manager.py:33: in __aexit__
+    await self._future
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    async def continuation() -> Optional[Response]:
+>       event = await waiter.result()
+                ^^^^^^^^^^^^^^^^^^^^^
+E       playwright._impl._errors.TimeoutError: Timeout 15000ms exceeded.
+E       =========================== logs ===========================
+E       waiting for navigation to "**/auctions" until 'domcontentloaded'
+E       ============================================================
+
+C:\Users\Hp\AppData\Local\Programs\Python\Python312\Lib\site-packages\playwright\_impl\_frame.py:265: TimeoutError
+- Generated html report: file:///E:/Sem5Project/BidBazaar/Testing/reports/report.html -
+=========================== short test summary info ===========================
+FAILED e2e/place_bid.py::test_valid_bid_is_accepted_and_shown_as_current_bid[webkit]
+ERROR e2e/create_auction.py::test_create_auction_blocked_while_commission_is_unpaid[firefox]
+============== 1 failed, 53 passed, 1 error in 402.91s (0:06:42) ==============

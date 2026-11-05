@@ -1,6 +1,6 @@
 """
 Root conftest: makes helpers.py / shared_config.py importable from the
-e2e/, api/ and mocking/ folders, and embeds a screenshot of the final
+e2e/, api/ and network/ folders, and embeds a screenshot of the final
 browser state of every UI test (pass or fail) into the HTML report.
 Also restyles the HTML report (report_style.css, Test case column).
 """
@@ -56,9 +56,6 @@ TEST_CASES = {
     "test_payment_with_valid_test_card_succeeds": ("TC-P1", "Pay with valid card", "Positive"),
     "test_payment_with_declined_card_is_rejected": ("TC-P2", "Declined card", "Negative"),
     "test_expired_payment_cannot_be_paid": ("TC-P3", "Payment deadline expired", "Negative"),
-    "test_admin_approves_commission_proof": ("TC-M1", "Admin approves proof", "Positive"),
-    "test_admin_rejects_commission_proof": ("TC-M2", "Admin rejects proof", "Negative"),
-    "test_submitting_more_than_owed_commission_is_rejected": ("TC-M3", "Proof larger than amount owed", "Negative"),
     "test_api_create_auction": ("TC-A1", "CREATE  POST /auctionitem/create", "API"),
     "test_api_read_auction": ("TC-A2", "READ  GET /auctionitem/auction/:id", "API"),
     "test_api_update_payment_proof_status": ("TC-A3", "UPDATE  PUT /superadmin/paymentproof/status/update/:id", "API"),

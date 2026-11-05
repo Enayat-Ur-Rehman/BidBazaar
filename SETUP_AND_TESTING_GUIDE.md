@@ -33,7 +33,7 @@ On Windows, install MongoDB as a service so it is always running. Docker also wo
 BidBazaar/
 ├── SETUP_AND_TESTING_GUIDE.md   <- this file
 ├── backend/
-│   ├── server.js                entry point (npm start)
+│   ├── server.js                entry point (npm run dev)
 │   ├── app.js                   Express app; loads config/config.env
 │   ├── config/config.env        all backend settings and secrets (see section 3)
 │   ├── seedTestAccounts.js      creates the 5 accounts the tests log in with
@@ -51,16 +51,16 @@ BidBazaar/
     ├── helpers.py               shared login/seed/cleanup helpers, snap() screenshots
     ├── conftest.py              HTML report customisation, zoom-out for headed runs
     ├── report_style.css         look of the HTML reports
-    ├── e2e/                     18 end-to-end tests (6 features x 3)
+    ├── e2e/                     15 end-to-end tests (5 features x 3)
     │   ├── login.py  register.py  create_auction.py
-    │   └── place_bid.py  payment.py  commission_review.py
+    │   └── place_bid.py  payment.py
     ├── api/                     4 API CRUD tests (one file per operation)
     │   ├── create.py  read.py  update.py  delete.py
     │   ├── api_helpers.py       prints each request/response
     │   └── conftest.py          logged-in API fixtures
-    ├── mocking/                 2 network-mocking tests
+    ├── network/                 2 network-mocking tests
     │   └── empty_data.py  server_error.py
-    ├── bug_demo.py              inserts a deliberate bug, shows the test fail, removes the bug, shows it pass
+    ├── bug_demo.py              inserts 2 deliberate bugs, shows the tests fail, removes the bugs, shows them pass
     ├── assets/                  images uploaded by the tests (gold_watch.jpg, sports_car.jpg)
     ├── REPORT.md                written test report (test case table, features, bugs)
     ├── BidBazaar_Test_Report.docx  the same report as a Word file, with screenshots
@@ -144,9 +144,9 @@ Expected output: 5 lines starting with `created` (or `exists`), then `Test accou
 |---|---|---|---|
 | Bidder | ammarkhanty2@gmail.com | 12345678 | login, register, place_bid, payment |
 | Auctioneer | ammar@gmail.com | ammar@12 | create_auction |
-| Auctioneer | ammar1@gmail.com | 12345678 | place_bid, commission_review |
+| Auctioneer | ammar1@gmail.com | 12345678 | place_bid |
 | Auctioneer | ammar3@gmail.com | 12345678 | api/* tests |
-| Super Admin | superadmin@gmail.com | 12345678 | commission_review, api/update.py |
+| Super Admin | superadmin@gmail.com | 12345678 | api/update.py |
 
 You can run the script again at any time. It also resets each account's unpaid commission to 0, which helps if a test run was interrupted.
 
@@ -159,7 +159,8 @@ Use two separate terminals and leave both running while you test.
 ```bash
 # terminal 1
 cd backend
-npm start            # wait for "Server listening on port 5000" and "Connected to database."
+npm run dev          # wait for "Server listening on port 5000" and "Connected to database."
+                     # (npm run dev = auto-restart on code changes, needed by bug_demo.py)
 
 # terminal 2
 cd frontend
@@ -181,7 +182,7 @@ All commands start from `BidBazaar/Testing`.
 cd Testing
 pytest
 ```
-This runs 64 tests: 20 browser tests on each of Chromium, Firefox and WebKit, plus the 4 API tests. It takes about 7 minutes. The report goes to `reports/report.html`.
+This runs 55 tests: 17 browser tests on each of Chromium, Firefox and WebKit, plus the 4 API tests. It takes about 6 minutes. The report goes to `reports/report.html`.
 
 ### Only Chromium, without a visible window
 ```bash
@@ -198,24 +199,33 @@ python login.py --headless      # no window
 python login.py chromium -k wrong_password   # one test only
 ```
 The same pattern works for every file:
-- `e2e/`: `login.py`, `register.py`, `create_auction.py`, `place_bid.py`, `payment.py`, `commission_review.py`
+- `e2e/`: `login.py`, `register.py`, `create_auction.py`, `place_bid.py`, `payment.py`
 - `api/`: `create.py`, `read.py`, `update.py`, `delete.py` (these print each request and response in the terminal)
-- `mocking/`: `empty_data.py`, `server_error.py`
+- `network/`: `empty_data.py`, `server_error.py`
 
 Each file writes its own report, for example `reports/login.html`. In visible runs the page is zoomed out to 80% so the whole layout fits on screen.
 
 ### Deliberate-bug demo
 ```bash
 cd Testing
-python bug_demo.py              # add --headless to hide the browser
+python bug_demo.py              # both bugs (add --headless to hide the browser)
+python bug_demo.py bid          # only bug 1
+python bug_demo.py payment      # only bug 2
 ```
-The script does four things:
-1. Changes the minimum-bid check in `frontend/src/pages/AuctionItem.jsx` to an off-by-one version.
-2. Runs test TC-B1, which **FAILS**.
-3. Restores the file. This always happens, even if the run crashes.
-4. Runs TC-B1 again, which **PASSES**.
+There are two deliberate bugs:
 
-The reports are `reports/report_with_bug.html` and `reports/report_bug_fixed.html`.
+| Bug | What it breaks | Files changed | Caught by |
+|---|---|---|---|
+| `bid` | A bid of 999 is accepted when the minimum is 1,000 (off-by-one) | `frontend/src/pages/AuctionItem.jsx` | TC-B1 in `e2e/place_bid.py` |
+| `payment` | The bidder can still pay after the 12-hour payment deadline is over | `frontend/src/pages/Payment/PaymentCheckout.jsx`, `backend/controllers/paymentContoller.js` | TC-P3 in `e2e/payment.py` |
+
+For each bug the script does four things:
+1. Inserts the bug.
+2. Runs the test that catches it, which **FAILS**.
+3. Restores the files. This always happens, even if the run crashes.
+4. Runs the test again, which **PASSES**.
+
+The reports are `reports/report_bid_bug.html` / `report_bid_fixed.html` and `reports/report_payment_bug.html` / `report_payment_fixed.html`. The backend half of the payment bug only takes effect if the backend was started with `npm run dev`.
 
 ### Viewing the results
 - **HTML reports:** in `Testing/reports/`, open them in a web browser (on Windows: `start reports\login.html`). Each row shows the test case ID and type; click a row to see the screenshots of the success or error message.
@@ -232,7 +242,7 @@ The reports are `reports/report_with_bug.html` and `reports/report_bug_fixed.htm
 | Login fails for a test account / "No account found" | Run `node seedTestAccounts.js` in `backend/`. |
 | "You already have one active auction" or "Unpaid Commission" in a test that should pass | A previous run was interrupted, or two runs overlapped. Run `node seedTestAccounts.js` again and run the tests one at a time. |
 | Payment tests time out on checkout.stripe.com | Stripe needs internet access and **test** keys (`sk_test_`) in `config.env`. |
-| `page.goto` timeout on the first test | The frontend (`npm run dev`) or backend (`npm start`) isn't running. |
+| `page.goto` timeout on the first test | The frontend (`npm run dev`) or backend (`npm run dev`) isn't running. |
 | `Executable doesn't exist` (Playwright) | Run `python -m playwright install`. |
 | `ModuleNotFoundError: helpers` | Run tests from inside `Testing/` (or its subfolders), not from the project root. |
 | Backend log shows `Email Sending Failed ... Invalid login` | SMTP credentials are invalid. This is harmless for the tests. |

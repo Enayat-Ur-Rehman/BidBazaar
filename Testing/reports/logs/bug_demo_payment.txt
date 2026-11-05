@@ -1,0 +1,172 @@
+
+================================================================
+  [payment] STEP 1  Inserting the bug: Expired payment can still be paid
+================================================================
+  frontend\src\pages\Payment\PaymentCheckout.jsx
+    before: const isExpired = timeLeft === "EXPIRED";
+    after : const isExpired = timeLeft === "Expired"; // DELIBERATE BUG (bug_demo.py): wrong case
+  backend\controllers\paymentContoller.js
+    before: if (new Date() > payment.expiresAt) {
+    after : if (new Date() > payment.expiryTime) { // DELIBERATE BUG (bug_demo.py): wrong field
+
+================================================================
+  [payment] STEP 2  Running TC-P3 WITH the bug  (expected: FAILED)
+================================================================
+============================= test session starts =============================
+collecting ... collected 3 items / 2 deselected / 1 selected
+
+e2e/payment.py::test_expired_payment_cannot_be_paid[chromium] FAILED     [100%]
+
+================================== FAILURES ===================================
+________________ test_expired_payment_cannot_be_paid[chromium] ________________
+
+page = <Page url='http://localhost:5173/payment/6ae381dfb36ff5379d784d79'>
+make_payment = <function make_payment.<locals>._make at 0x000002051898B7E0>
+
+    def test_expired_payment_cannot_be_paid(page: Page, make_payment):
+        payment_id = make_payment(expires_in=timedelta(hours=-1))
+        open_checkout(page, payment_id)
+    
+>       expect(page.get_by_text("Payment Deadline Expired")).to_be_visible(timeout=15_000)
+E       AssertionError: Locator expected to be visible
+E       Actual value: None
+E       Error: element(s) not found 
+E       Call log:
+E         - Expect "to_be_visible" get_by_text("Payment Deadline Expired") with timeout 15000ms
+E         - waiting for get_by_text("Payment Deadline Expired")
+E       
+E       Aria snapshot:
+E       - link "BidBazaar":
+E         - /url: /
+E         - heading "BidBazaar" [level=4]
+E       - navigation:
+E         - list:
+E           - listitem:
+E             - link "Auctions":
+E               - /url: /auctions
+E               - img
+E               - text: Auctions
+E           - listitem:
+E             - link "Leaderboard":
+E               - /url: /leaderboard
+E               - img
+E               - text: Leaderboard
+E           - listitem:
+E             - link "My Bids":
+E               - /url: /bidder/myBids
+E               - img
+E               - text: My Bids
+E           - listitem:
+E             - link "My Payments":
+E               - /url: /bidder/myPayments
+E               - img
+E               - text: My Payments
+E           - listitem:
+E             - link "Dashboard":
+E               - /url: /bidder/dashboard
+E               - img
+E               - text: Dashboard
+E       - button "Logout"
+E       - navigation:
+E         - list:
+E           - listitem:
+E             - link "Profile":
+E               - /url: /me
+E               - img
+E               - text: Profile
+E           - listitem:
+E             - link "How it works":
+E               - /url: /how-it-works-info
+E               - img
+E               - text: How it works
+E           - listitem:
+E             - link "About Us":
+E               - /url: /about
+E               - img
+E               - text: About Us
+E       - link "Facebook":
+E         - /url: /
+E         - img
+E       - link "Instagram":
+E         - /url: /
+E         - img
+E       - link "Contact Us →":
+E         - /url: /contact
+E       - paragraph: © BidBazaar, LLC.
+E       - banner:
+E         - button "Toggle sidebar":
+E           - img
+E         - heading "BidBazaar" [level=1]
+E         - paragraph: Online Auction Platform - Bidder Dashboard
+E         - button "Notifications":
+E           - img
+E         - button "A":
+E           - text: A
+E           - img
+E       - main:
+E         - button "Back to Payments":
+E           - img
+E           - text: Back to Payments
+E         - heading "Confirm Your Win" [level=1]
+E         - paragraph: Complete the 20% payment to secure your item
+E         - img
+E         - paragraph: "Time Remaining: EXPIRED"
+E         - paragraph: Complete payment within this timeframe
+E         - heading "Payment Test Auction 1793294813286" [level=2]
+E         - img "Auction item"
+E         - text: "Winning Bid Amount: Rs. 5,000 20% Payment (Due Now): Rs. 1000"
+E         - paragraph: ℹ️ Pay remaining 80% directly to auctioneer after confirmation
+E         - text: "Remaining 80% (Later): Rs. 4,000"
+E         - img
+E         - paragraph: "What happens after:"
+E         - list:
+E           - listitem: Your win will be officially confirmed
+E           - listitem: Auctioneer will contact you for delivery
+E           - listitem: Pay remaining 80% using preferred method
+E           - listitem: Receive your item
+E         - img
+E         - paragraph: 🔒 Secure Payment
+E         - paragraph: Your payment is protected by Stripe encryption
+E         - button "Pay Rs. 1000 with Stripe":
+E           - img
+E           - text: Pay Rs. 1000 with Stripe
+E         - button "Cancel"
+E         - paragraph: By clicking "Pay Now", you agree to our terms and conditions
+E         - heading "Frequently Asked Questions" [level=3]
+E         - paragraph: Why 20% upfront?
+E         - paragraph: The 20% deposit confirms your commitment and secures the item.
+E         - paragraph: What if I miss the deadline?
+E         - paragraph: The auction will be offered to the next highest bidder.
+E         - paragraph: Is this payment secure?
+E         - paragraph: Yes, we use Stripe for secure, PCI-compliant payment processing.
+E         - paragraph: How do I pay the 80%?
+E         - paragraph: Contact the auctioneer after 20% is confirmed. You can use bank transfer, easypaisa, or COD.
+
+e2e\payment.py:116: AssertionError
+- Generated html report: file:///E:/Sem5Project/BidBazaar/Testing/reports/report_payment_bug.html -
+=========================== short test summary info ===========================
+FAILED e2e/payment.py::test_expired_payment_cannot_be_paid[chromium] - Assert...
+====================== 1 failed, 2 deselected in 20.43s =======================
+
+================================================================
+  [payment] STEP 3  Removing the bug (files restored)
+================================================================
+
+================================================================
+  [payment] STEP 4  Running TC-P3 WITHOUT the bug  (expected: PASSED)
+================================================================
+============================= test session starts =============================
+collecting ... collected 3 items / 2 deselected / 1 selected
+
+e2e/payment.py::test_expired_payment_cannot_be_paid[chromium] PASSED     [100%]
+
+- Generated html report: file:///E:/Sem5Project/BidBazaar/Testing/reports/report_payment_fixed.html -
+======================= 1 passed, 2 deselected in 7.32s =======================
+
+================================================================
+  SUMMARY
+================================================================
+  payment  Expired payment can still be paid  (TC-P3)
+           with the bug    : FAILED  (bug caught by the test)
+           without the bug : PASSED
+           reports         : reports/report_payment_bug.html, reports/report_payment_fixed.html

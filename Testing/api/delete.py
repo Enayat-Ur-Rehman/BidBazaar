@@ -1,8 +1,10 @@
 """
-API TEST 4 — DELETE   DELETE /auctionitem/delete/:id
+API TEST 4: DELETE   (DELETE /auctionitem/delete/:id)
 
-  TC-A4  delete a real auction          -> 200 OK
-         delete the same auction again  -> 404 "Auction not found."
+No browser. We send requests straight to the backend and check its answer.
+
+  TC-A4  delete a real auction           -> 200 OK
+         delete the same auction again   -> 404 "Auction not found." (it is really gone)
 """
 import sys
 from pathlib import Path
@@ -16,11 +18,14 @@ from shared_config import BACKEND_API
 
 def test_api_delete_auction(auctioneer_api: APIRequestContext):
     heading("TC-A4  DELETE  -  DELETE /auctionitem/delete/:id")
+    # Setup: create an auction so we have something to delete.
     auction_id = new_auction(auctioneer_api)
 
+    # Step 1: delete it -> 200.
     r = auctioneer_api.delete(f"{BACKEND_API}/auctionitem/delete/{auction_id}")
     check("DELETE", r, 200, "real auction -> deleted")
 
+    # Step 2: delete it again -> 404, which proves it was really removed.
     r = auctioneer_api.delete(f"{BACKEND_API}/auctionitem/delete/{auction_id}")
     body = check("DELETE", r, 404, "same auction again -> already gone")
     assert body["message"] == "Auction not found."

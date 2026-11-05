@@ -1,5 +1,5 @@
 """
-Shared helpers used by every test file in e2e/, api/ and mocking/.
+Shared helpers used by every test file in e2e/, api/ and network/.
 
 Setup/cleanup goes through the backend API or MongoDB directly — that
 is test *preparation*, not the behaviour under test. The behaviour

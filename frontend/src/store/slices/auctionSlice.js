@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { API_BASE } from "../../lib/apiBase";
 import { toast } from "react-toastify";
 
 const auctionSlice = createSlice({
@@ -104,7 +105,7 @@ export const getAllAuctionItems = () => async (dispatch) => {
   dispatch(auctionSlice.actions.getAllAuctionItemRequest());
   try {
     const response = await axios.get(
-      "http://localhost:5000/api/v1/auctionitem/allitems",
+      `${API_BASE}/api/v1/auctionitem/allitems`,
       { withCredentials: true }
     );
     dispatch(
@@ -122,7 +123,7 @@ export const getMyAuctionItems = () => async (dispatch) => {
   dispatch(auctionSlice.actions.getMyAuctionsRequest());
   try {
     const response = await axios.get(
-      "http://localhost:5000/api/v1/auctionitem/myitems",
+      `${API_BASE}/api/v1/auctionitem/myitems`,
       { withCredentials: true }
     );
     dispatch(auctionSlice.actions.getMyAuctionsSuccess(response.data.items));
@@ -138,7 +139,7 @@ export const getAuctionDetail = (id) => async (dispatch) => {
   dispatch(auctionSlice.actions.getAuctionDetailRequest());
   try {
     const response = await axios.get(
-      `http://localhost:5000/api/v1/auctionitem/auction/${id}`,
+      `${API_BASE}/api/v1/auctionitem/auction/${id}`,
       { withCredentials: true }
     );
     dispatch(auctionSlice.actions.getAuctionDetailSuccess(response.data));
@@ -154,7 +155,7 @@ export const getUnpaidCommission = () => async (dispatch) => {
   dispatch(auctionSlice.actions.getUnpaidCommissionRequest());
   try {
     const response = await axios.get(
-      "http://localhost:5000/api/v1/user/unpaid-commission",
+      `${API_BASE}/api/v1/user/unpaid-commission`,
       { withCredentials: true }
     );
     dispatch(
@@ -170,7 +171,7 @@ export const createAuction = (data) => async (dispatch) => {
   dispatch(auctionSlice.actions.createAuctionRequest());
   try {
     const response = await axios.post(
-      "http://localhost:5000/api/v1/auctionitem/create",
+      `${API_BASE}/api/v1/auctionitem/create`,
       data,
       {
         withCredentials: true,
@@ -194,7 +195,7 @@ export const republishAuction = (id, data) => async (dispatch) => {
   dispatch(auctionSlice.actions.republishItemRequest());
   try {
     const response = await axios.put(
-      `http://localhost:5000/api/v1/auctionitem/item/republish/${id}`,
+      `${API_BASE}/api/v1/auctionitem/item/republish/${id}`,
       data,
       {
         withCredentials: true,
@@ -219,7 +220,7 @@ export const deleteAuction = (id) => async (dispatch) => {
   dispatch(auctionSlice.actions.deleteAuctionItemRequest());
   try {
     const response = await axios.delete(
-      `http://localhost:5000/api/v1/auctionitem/delete/${id}`,
+      `${API_BASE}/api/v1/auctionitem/delete/${id}`,
       {
         withCredentials: true,
       }
