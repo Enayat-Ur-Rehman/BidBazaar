@@ -1,0 +1,116 @@
+name: CI/CD - Build, Test, Deploy
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "**.md"
+      - "Testing/**"
+      - "reports/**"
+  workflow_dispatch:
+
+permissions:
+  id-token: write # needed to log in to AWS with OIDC (no stored AWS keys)
+  contents: read
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+env:
+  AWS_REGION: us-east-1
+  AWS_ROLE_ARN: arn:aws:iam::626495478708:role/bidbazaar-github-actions
+  ECR_REGISTRY: 626495478708.dkr.ecr.us-east-1.amazonaws.com
+  SITE_URL: http://bidbazaar-alb-1215735136.us-east-1.elb.amazonaws.com
+  APP_IMAGE: 626495478708.dkr.ecr.us-east-1.amazonaws.com/bidbazaar-app:${{ github.sha }}
+  WEB_IMAGE: 626495478708.dkr.ecr.us-east-1.amazonaws.com/bidbazaar-web:${{ github.sha }}
+
+jobs:
+  build-test-push:
+    name: Build, test and push images
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker images
+        run: docker compose build
+
+      - name: Start all three tiers (web, app, mongo)
+        run: docker compose up -d
+
+      - name: Smoke tests
+        run: |
+          for i in $(seq 1 30); do
+            curl -fs http://localhost:8080/api/v1/health && break
+            sleep 2
+          done
+          echo "--- health";        curl -fsS http://localhost:8080/api/v1/health
+          echo; echo "--- website"; curl -fsS http://localhost:8080/ | grep -q 'id="root"' && echo "React app served"
+          echo "--- SPA route";     curl -fsS -o /dev/null -w "%{http_code}\n" http://localhost:8080/auctions
+          echo "--- API + DB";      curl -fsS -o /dev/null -w "%{http_code}\n" http://localhost:8080/api/v1/auctionitem/allitems
+
+      - name: Show container logs on failure
+        if: failure()
+        run: docker compose logs
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Log in to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Push images to ECR
+        run: |
+          for t in app web; do
+            img="$ECR_REGISTRY/bidbazaar-$t"
+            docker tag "$img:${GITHUB_SHA}" "$img:latest"
+            docker push "$img:${GITHUB_SHA}"
+            docker push "$img:latest"
+          done
+
+  deploy:
+    name: Deploy to AWS
+    needs: build-test-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Pull new images on every app host (SSM Run Command)
+        run: |
+          CMD_ID=$(aws ssm send-command \
+            --document-name AWS-RunShellScript \
+            --targets "Key=tag:Role,Values=app-host" \
+            --parameters 'commands=["/opt/bidbazaar/deploy.sh"]' \
+            --comment "Deploy ${GITHUB_SHA::7}" \
+            --query Command.CommandId --output text)
+          echo "SSM command: $CMD_ID"
+          for i in $(seq 1 60); do
+            STATUS=$(aws ssm list-commands --command-id "$CMD_ID" --query "Commands[0].Status" --output text)
+            echo "status: $STATUS"
+            case "$STATUS" in
+              Success) break ;;
+              Pending|InProgress|Delayed) sleep 10 ;;
+              *) aws ssm list-command-invocations --command-id "$CMD_ID" --details \
+                   --query "CommandInvocations[].CommandPlugins[].Output" --output text; exit 1 ;;
+            esac
+          done
+          [ "$STATUS" = "Success" ] || { echo "Deployment timed out"; exit 1; }
+          aws ssm list-command-invocations --command-id "$CMD_ID" --details \
+            --query "CommandInvocations[].[InstanceId,CommandPlugins[0].Output]" --output text
+
+      - name: Verify the live website
+        run: |
+          for i in $(seq 1 20); do
+            curl -fs "$SITE_URL/api/v1/health" && break
+            sleep 6
+          done
+          curl -fsS "$SITE_URL/api/v1/health"
+          curl -fsS "$SITE_URL/" | grep -q 'id="root"'
+          echo; echo "Live at $SITE_URL"

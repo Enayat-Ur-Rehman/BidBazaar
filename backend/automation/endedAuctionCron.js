@@ -1,9 +1,10 @@
 import cron from "node-cron";
 import { Auction } from "../models/auctionSchema.js";
 import { initiateAuctionPayment } from "../services/paymentFlowService.js";
+import { runExclusive } from "../utils/cronLock.js";
 
 export const endedAuctionCron = () => {
-  cron.schedule("*/1 * * * *", async () => {
+  cron.schedule("*/1 * * * *", () => runExclusive("endedAuction", 50_000, async () => {
     const now = new Date();
     console.log("Cron for ended auction running...");
 
@@ -34,5 +35,5 @@ export const endedAuctionCron = () => {
     }catch(error){
       console.error("Error in Ended Auction Cron :",error);
     }
-  });
+  }));
 };

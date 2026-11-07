@@ -3,9 +3,10 @@ import { PaymentProof } from "../models/commissionProofSchema.js";
 import { Commission } from "../models/commissionSchema.js";
 import cron from "node-cron";
 import { sendEmail } from "../utils/sendEmail.js";
+import { runExclusive } from "../utils/cronLock.js";
 
 export const verifyCommissionCron = () => {
-  cron.schedule("*/1 * * * *", async () => {
+  cron.schedule("*/1 * * * *", () => runExclusive("verifyCommission", 50_000, async () => {
     console.log("Running Verify Commission Cron...");
     const approvedProofs = await PaymentProof.find({ status: "Approved" });
     for (const proof of approvedProofs) {
@@ -57,5 +58,5 @@ export const verifyCommissionCron = () => {
         );
       }
     }
-  });
+  }));
 };

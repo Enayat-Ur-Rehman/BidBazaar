@@ -1,0 +1,64 @@
+#!/bin/bash
+set -eux
+dd if=/dev/zero of=/swapfile bs=1M count=1024 && chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile
+echo '/swapfile none swap sw 0 0' >> /etc/fstab
+
+# Wait until the NAT instance gives this private server internet access.
+for i in $(seq 1 60); do curl -sS -o /dev/null https://github.com && break; sleep 10; done
+
+dnf install -y docker
+systemctl enable --now docker
+mkdir -p /usr/local/lib/docker/cli-plugins
+curl -fsSL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 \
+  -o /usr/local/lib/docker/cli-plugins/docker-compose
+chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+
+mkdir -p /opt/bidbazaar
+
+# Web tier (nginx) and App tier (Node) containers; only the web container is exposed on the host.
+cat > /opt/bidbazaar/docker-compose.yml <<'EOF'
+services:
+  app:
+    image: ${ecr_registry}/${project}-app:latest
+    env_file: .env
+    restart: unless-stopped
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: ${region}
+        awslogs-group: ${log_group}
+        tag: "app-{{.ID}}"
+  web:
+    image: ${ecr_registry}/${project}-web:latest
+    environment:
+      APP_UPSTREAM: app:5000
+    ports:
+      - "80:80"
+    depends_on:
+      - app
+    restart: unless-stopped
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: ${region}
+        awslogs-group: ${log_group}
+        tag: "web-{{.ID}}"
+EOF
+
+# Called at first boot and by the CI/CD pipeline (through SSM) to roll out new images.
+cat > /opt/bidbazaar/deploy.sh <<'EOF'
+#!/bin/bash
+set -euo pipefail
+cd /opt/bidbazaar
+aws ssm get-parameters-by-path --region ${region} --path /${project}/app --with-decryption \
+  --query "Parameters[].[Name,Value]" --output text \
+  | sed -e 's|^/${project}/app/||' -e 's|\t|=|' > .env
+chmod 600 .env
+aws ecr get-login-password --region ${region} | docker login --username AWS --password-stdin ${ecr_registry}
+docker compose pull
+docker compose up -d --remove-orphans
+docker image prune -f
+docker compose ps
+EOF
+chmod +x /opt/bidbazaar/deploy.sh
+/opt/bidbazaar/deploy.sh

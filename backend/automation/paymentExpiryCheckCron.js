@@ -1,9 +1,10 @@
 import cron from "node-cron";
 import { Payment } from "../models/paymentSchema.js";
 import { handlePaymentExpiry } from "../services/paymentFlowService.js";
+import { runExclusive } from "../utils/cronLock.js";
 
 export const paymentExpiryCron = () => {
-  cron.schedule("*/5 * * * *", async () => {
+  cron.schedule("*/5 * * * *", () => runExclusive("paymentExpiry", 270_000, async () => {
     const now = new Date();
     console.log("Checking for expired payment deadlines...");
 
@@ -36,5 +37,5 @@ export const paymentExpiryCron = () => {
     } catch (error) {
       console.error("Critical error in payment expiry check cron:", error);
     }
-  });
+  }));
 };

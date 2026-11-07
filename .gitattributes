@@ -1,0 +1,5 @@
+# Scripts and configs that run inside Linux servers/containers must keep LF line endings.
+*.sh       text eol=lf
+*.tftpl    text eol=lf
+*.template text eol=lf
+Dockerfile text eol=lf

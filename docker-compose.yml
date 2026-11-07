@@ -1,0 +1,33 @@
+# Local / CI orchestration of all three tiers.
+# Run: docker compose up --build   ->  http://localhost:8080
+services:
+  mongo:
+    image: mongo:8.0
+    volumes:
+      - mongo-data:/data/db
+
+  app:
+    build: ./backend
+    image: ${APP_IMAGE:-bidbazaar-app:local}
+    env_file:
+      - path: ./backend/config/config.env
+        required: false
+    environment:
+      PORT: "5000"
+      MONGO_URI: mongodb://mongo:27017/MERN_AUCTION_PLATFORM
+      FRONTEND_URL: http://localhost:8080
+    depends_on:
+      - mongo
+
+  web:
+    build: ./frontend
+    image: ${WEB_IMAGE:-bidbazaar-web:local}
+    environment:
+      APP_UPSTREAM: app:5000
+    ports:
+      - "8080:80"
+    depends_on:
+      - app
+
+volumes:
+  mongo-data:

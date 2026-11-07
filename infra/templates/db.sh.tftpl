@@ -1,0 +1,26 @@
+#!/bin/bash
+set -eux
+dd if=/dev/zero of=/swapfile bs=1M count=1024 && chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile
+echo '/swapfile none swap sw 0 0' >> /etc/fstab
+
+# Wait until the NAT instance gives this private server internet access.
+for i in $(seq 1 60); do curl -sS -o /dev/null https://registry-1.docker.io/v2/ && break; sleep 10; done
+
+dnf install -y docker
+systemctl enable --now docker
+
+ROOT_PW=$(aws ssm get-parameter --region ${region} --name /${project}/db/MONGO_ROOT_PASSWORD --with-decryption --query Parameter.Value --output text)
+APP_PW=$(aws ssm get-parameter --region ${region} --name /${project}/db/MONGO_APP_PASSWORD --with-decryption --query Parameter.Value --output text)
+
+mkdir -p /data/db /opt/mongo-init
+# Least privilege: the application gets its own user with readWrite on its database only.
+cat > /opt/mongo-init/01-app-user.js <<EOF
+db.getSiblingDB("MERN_AUCTION_PLATFORM").createUser({user: "bidbazaar", pwd: "$APP_PW", roles: [{role: "readWrite", db: "MERN_AUCTION_PLATFORM"}]});
+EOF
+
+docker run -d --name mongo --restart unless-stopped -p 27017:27017 \
+  -v /data/db:/data/db -v /opt/mongo-init:/docker-entrypoint-initdb.d:ro \
+  -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD="$ROOT_PW" \
+  --log-driver awslogs --log-opt awslogs-region=${region} \
+  --log-opt awslogs-group=${log_group} --log-opt awslogs-stream=mongo \
+  mongo:8.0
