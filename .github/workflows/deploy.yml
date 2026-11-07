@@ -28,8 +28,10 @@ env:
 jobs:
   build-test-push:
     name: Build, test and push images
-    # Pinned: MongoDB 8 (used in the smoke test) refuses to start on the kernel 6.19+ of newer runner images.
     runs-on: ubuntu-24.04
+    env:
+      # MongoDB 8 refuses to start on the 6.19+ kernel of GitHub runners; 7.0 is fine for the smoke test.
+      MONGO_IMAGE: mongo:7.0
     steps:
       - uses: actions/checkout@v4
 

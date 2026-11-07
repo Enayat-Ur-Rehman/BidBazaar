@@ -2,7 +2,7 @@
 # Run: docker compose up --build   ->  http://localhost:8080
 services:
   mongo:
-    image: mongo:8.0
+    image: ${MONGO_IMAGE:-mongo:8.0}
     volumes:
       - mongo-data:/data/db
     healthcheck:
