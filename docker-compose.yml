@@ -5,6 +5,11 @@ services:
     image: mongo:8.0
     volumes:
       - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
 
   app:
     build: ./backend
@@ -17,7 +22,8 @@ services:
       MONGO_URI: mongodb://mongo:27017/MERN_AUCTION_PLATFORM
       FRONTEND_URL: http://localhost:8080
     depends_on:
-      - mongo
+      mongo:
+        condition: service_healthy
 
   web:
     build: ./frontend

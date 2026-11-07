@@ -10,6 +10,8 @@ export const connection = () => {
     })
     .catch((err) => {
       console.log(`Some error occured while connecting to database: ${err}`);
+      // The database may still be starting (e.g. after servers are restarted), so keep retrying.
+      setTimeout(connection, 5000);
     });
 };
 
