@@ -2,7 +2,7 @@
 
 BidBazaar is deployed on **AWS** as a containerized **three-tier** application:
 - **Terraform** creates all the infrastructure.
-- **GitHub Actions** builds, tests and deploys every code change automatically.
+- **GitHub Actions** builds, tests and deploys the code when you start the workflow from the Actions tab.
 
 | | |
 |---|---|
@@ -43,7 +43,7 @@ BidBazaar is deployed on **AWS** as a containerized **three-tier** application:
 │   └──────────────────────────────────────┘                                  │
 └─────────────────────────────────────────────────────────────────────────────┘
 
-CI/CD:  git push → GitHub Actions → build + test → push images to Amazon ECR
+CI/CD:  Run workflow (Actions tab) → GitHub Actions → build + test → push images to Amazon ECR
         → SSM Run Command on app hosts → pull new images → live site updated
 Secrets: SSM Parameter Store (SecureString) → read by servers at start/deploy
 Logs:    all containers → CloudWatch Logs group /bidbazaar/containers
@@ -102,7 +102,7 @@ infra/templates/*.sh(.tftpl)     First-boot scripts for the NAT, DB and app host
 
 ## 4. How the pipeline works
 
-The pipeline runs on every push to `main`, or by hand from **Actions → CI/CD - Build, Test, Deploy → Run workflow**. Pushes that only change `.md` files or `Testing/` are skipped.
+The pipeline does not start on its own. Start it by hand: **Actions → CI/CD - Build, Test, Deploy → Run workflow** (branch `main`) → **Run workflow**.
 
 **Job 1 – Build, test and push images**
 1. Check out the code.
@@ -139,10 +139,10 @@ New servers started by the Auto Scaling Group run the same `deploy.sh` at first 
    git commit -m "Demo: update heading"
    git push origin main
    ```
-4. Open **GitHub → Actions**. The run **CI/CD - Build, Test, Deploy** starts automatically. Both jobs turn green in about **3–4 minutes**.
+4. Open **GitHub → Actions → CI/CD - Build, Test, Deploy**, click **Run workflow**, keep branch `main`, and click the green **Run workflow** button. Both jobs turn green in about **3–4 minutes**.
 5. Refresh the live site (Ctrl+F5). The new text is there.
 
-You can also start the pipeline without a code change: **Actions → CI/CD - Build, Test, Deploy → Run workflow**.
+The same button also redeploys without any code change.
 
 ---
 
@@ -196,7 +196,7 @@ terraform destroy              # deletes everything (asks for confirmation)
 | Availability | 2 Availability Zones for subnets and the load balancer. The ASG replaces unhealthy hosts automatically (ELB health check). Containers restart automatically. | The DB server and NAT instance are single points of failure. Could use a replica set and one NAT Gateway per AZ. |
 | Elasticity | CPU target-tracking policy scales hosts out and back in automatically. | Max is 2 hosts to protect free-tier credits. |
 | Security | Private subnets, security group chain (ALB → app hosts → DB), no SSH (Systems Manager only), MongoDB authentication with a least-privilege app user, secrets in SSM SecureString, OIDC for CI (no stored keys), non-root app container, IMDSv2 required. | HTTP only (no domain for an HTTPS certificate). Could add ACM + HTTPS listener + a domain. |
-| Maintainability / Deployability | Everything is code (Terraform, Dockerfiles, workflow). One push deploys in about 4 minutes with automatic tests. | Deploy restarts containers in place (a few seconds of downtime). Could use ASG instance refresh or blue/green. |
+| Maintainability / Deployability | Everything is code (Terraform, Dockerfiles, workflow). One click on Run workflow deploys in about 4 minutes with automatic tests. | Deploy restarts containers in place (a few seconds of downtime). Could use ASG instance refresh or blue/green. |
 | Performance | nginx serves static files directly; the load balancer and app hosts are in the same region and VPC. | No CDN or caching. Could add CloudFront in front of the load balancer. |
 | Cost-efficiency | See section 7. | — |
 | Portability | Containers run the same on a laptop (`docker compose up`), in CI and on AWS. Only Terraform is AWS-specific. | — |

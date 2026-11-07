@@ -1,12 +1,7 @@
 name: CI/CD - Build, Test, Deploy
 
+# Manual only: Actions -> "CI/CD - Build, Test, Deploy" -> Run workflow (branch: main).
 on:
-  push:
-    branches: [main]
-    paths-ignore:
-      - "**.md"
-      - "Testing/**"
-      - "reports/**"
   workflow_dispatch:
 
 permissions:
