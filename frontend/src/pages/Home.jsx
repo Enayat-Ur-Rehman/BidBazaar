@@ -652,7 +652,7 @@ const CTASection = ({ isAuthenticated }) => {
 
 const Footer = () => {
   return (
-    <footer className="bg-[#111] text-white py-12 px-5">
+    <footer className="bg-white text-gray-900 border-t border-stone-200 py-12 px-5">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           <div>
@@ -690,7 +690,7 @@ const Footer = () => {
           </div>
         </div>
         
-        <div className="border-t border-stone-800 pt-8 text-center text-stone-400">
+        <div className="border-t border-stone-200 pt-8 text-center text-stone-400">
           <p>&copy; 2024 BidBazaar, LLC. All rights reserved.</p>
         </div>
       </div>
