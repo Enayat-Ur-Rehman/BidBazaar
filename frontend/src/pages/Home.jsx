@@ -151,7 +151,7 @@ const HeroSection = ({ isAuthenticated }) => {
         </p>
         
         <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 text-[#111] animate-slide-up">
-          Transparent Auctions
+          Transparent Auctions Impossible
         </h1>
         
         <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-8 bg-gradient-to-r from-[#D6482B] to-[#ff6b4a] bg-clip-text text-transparent animate-slide-up delay-200">
